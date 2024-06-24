@@ -3,10 +3,11 @@ import { fs, FieldValue } from '../../Config/Config';
 import { useParams } from 'react-router-dom';
 
 const VerifyEnrollment = () => {
-    const { studentId } = useParams(); // Removed 'classId'
+    const { studentId } = useParams();
     const [student, setStudent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [courseDetails, setCourseDetails] = useState({});
 
     useEffect(() => {
         const fetchStudentData = async () => {
@@ -15,7 +16,9 @@ const VerifyEnrollment = () => {
             try {
                 const studentDoc = await fs.collection('students').doc(studentId).get();
                 if (studentDoc.exists) {
-                    setStudent(studentDoc.data());
+                    const studentData = studentDoc.data();
+                    setStudent(studentData);
+                    await fetchCourseDetails(studentData.enrolledCourses);
                 } else {
                     setError('Student data not found.');
                 }
@@ -25,6 +28,31 @@ const VerifyEnrollment = () => {
                 setLoading(false);
             }
         };
+
+        const fetchCourseDetails = async (enrolledCourses) => {
+            const courseData = {};
+            for (let courseId of enrolledCourses) {
+                try {
+                    const assignCourseDoc = await fs.collection('assignCourses').doc(courseId).get();
+                    if (assignCourseDoc.exists) {
+                        const assignCourse = assignCourseDoc.data();
+                        const courseDoc = await fs.collection('courses').doc(assignCourse.courseId).get();
+                        if (courseDoc.exists) {
+                            const course = courseDoc.data();
+                            courseData[courseId] = {
+                                ...assignCourse,
+                                name: course.name,
+                                preRequisites: course.preRequisites || []
+                            };
+                        }
+                    }
+                } catch (err) {
+                    console.error(`Error fetching course ${courseId}:`, err);
+                }
+            }
+            setCourseDetails(courseData);
+        };
+
         fetchStudentData();
     }, [studentId]);
 
@@ -58,6 +86,13 @@ const VerifyEnrollment = () => {
         }
     };
 
+    const checkPrerequisites = (preRequisites) => {
+        if (!preRequisites || preRequisites.length === 0) return true;
+        return preRequisites.every((preReqId) =>
+            student.completedCourses.includes(preReqId)
+        );
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -78,6 +113,7 @@ const VerifyEnrollment = () => {
                             <thead>
                                 <tr>
                                     <th>Course ID</th>
+                                    <th>Course Name</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -85,9 +121,20 @@ const VerifyEnrollment = () => {
                                 {student.enrolledCourses.map((courseId) => (
                                     <tr key={courseId}>
                                         <td>{courseId}</td>
+                                        <td>{courseDetails[courseId]?.name || 'Loading...'}</td>
                                         <td>
-                                            <button onClick={() => handleApprove(courseId)}>Approve</button>
-                                            <button onClick={() => handleDisapprove(courseId)}>Disapprove</button>
+                                            <button
+                                                onClick={() => handleApprove(courseId)}
+                                                disabled={!checkPrerequisites(courseDetails[courseId]?.preRequisites)}
+                                            >
+                                                Approve
+                                            </button>
+                                            <button
+                                                onClick={() => handleDisapprove(courseId)}
+                                                disabled={checkPrerequisites(courseDetails[courseId]?.preRequisites)}
+                                            >
+                                                Disapprove
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}

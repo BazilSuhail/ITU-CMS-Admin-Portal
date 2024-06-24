@@ -1,6 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, } from "react-router-dom";
-import RegisterDepartment from "./Components/RegisterDepartment";
+import { BrowserRouter as Router, Routes, Route, } from "react-router-dom"; 
 import SignIn from "./Components/SignIn";
 import DepartmentProfile from "./Components/DepartmentProfile";
 import Navbar from "./Components/Navbar";
@@ -13,6 +12,10 @@ import ClassStudents from "./Components/Department_Classes/ClassStdudents";
 import VerifyEnrollment from "./Components/Department_Classes/VerifyEnrollment";
 import DepartmentClasses from "./Components/Department_Classes/DepartmentClasses";
 
+import RegisterCourse from "./Components/Resgistrations/RegisterCourse";
+import RegisterInstructor from "./Components/Resgistrations/ResisterInstructor";
+import RegisterDepartment from "./Components/Resgistrations/RegisterDepartment";
+
 const App = () => {
   return (
     <Router>
@@ -20,6 +23,8 @@ const App = () => {
       <Routes>
         {/*<Route exact path="/registerdepartment" element={<RegisterDepartment />} /> */}
         <Route exact path="/registerdepartment" element={<RegisterDepartment />} />
+        <Route exact path="/registerinstructor" element={<RegisterInstructor />} />
+        <Route exact path="/registercourse" element={<RegisterCourse />} />
 
         <Route path="/department-profile" element={<DepartmentProfile />} />
 
@@ -28,6 +33,7 @@ const App = () => {
         <Route path="/course-details/:assignCourseId" element={<CourseDetails />} />
         <Route path="/marking-details/:assignCourseId" element={<Marking />} />
         <Route path="/assign-marks/:assignCourseId" element={<AssignMarks />} />
+        
         <Route exact path="/" element={<SignIn />} />
 
 

@@ -3,27 +3,34 @@ import { auth, fs } from '../Config/Config';
 import { arrayUnion } from 'firebase/firestore';
 
 const StudentRegistration = () => {
-    const [studentName, setStudentName] = useState('');
-    const [studentEmail, setStudentEmail] = useState('');
-    const [studentDob, setStudentDob] = useState('');
-    const [studentPhone, setStudentPhone] = useState('');
-    const [studentPassword, setStudentPassword] = useState('');
-    const [studentClassId, setStudentClassId] = useState('');
+    const [student, setStudent] = useState({
+        name: '',
+        email: '',
+        dob: '',
+        phone: '',
+        password: '',
+        classId: ''
+    });
     const [studentLoading, setStudentLoading] = useState(false);
     const [studentError, setStudentError] = useState(null);
     const [studentSuccess, setStudentSuccess] = useState(null);
     const [classes, setClasses] = useState([]);
-    //const [students, setStudents] = useState([]);
+    const [students, setStudents] = useState([]);
 
     useEffect(() => {
-        const fetchClasses = async () => {
+        const fetchClassesAndStudents = async () => {
             try {
                 const user = auth.currentUser;
                 if (user) {
+                    // Fetch classes
                     const classesSnapshot = await fs.collection('classes').where('departmentId', '==', user.uid).get();
                     const classesList = classesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     setClasses(classesList);
-                    console.log(classesList);
+
+                    // Fetch students
+                    const studentsSnapshot = await fs.collection('students').where('departmentId', '==', user.uid).get();
+                    const studentsList = studentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    setStudents(studentsList);
                 } else {
                     setStudentError('No user is currently logged in.');
                 }
@@ -32,8 +39,16 @@ const StudentRegistration = () => {
             }
         };
 
-        fetchClasses();
+        fetchClassesAndStudents();
     }, []);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setStudent(prevStudent => ({
+            ...prevStudent,
+            [name]: value
+        }));
+    };
 
     const handleRegisterStudent = async (e) => {
         e.preventDefault();
@@ -42,27 +57,26 @@ const StudentRegistration = () => {
         setStudentSuccess(null);
 
         try {
-            const userCredential = await auth.createUserWithEmailAndPassword(studentEmail, studentPassword);
+            const userCredential = await auth.createUserWithEmailAndPassword(student.email, student.password);
             const user = userCredential.user;
 
             await fs.collection('students').doc(user.uid).set({
-                name: studentName,
-                email: studentEmail,
-                dob: studentDob,
-                phone: studentPhone,
-                classId: studentClassId
+                ...student,
+                createdAt: new Date()
             });
 
-            await fs.collection('classes').doc(studentClassId).update({
+            await fs.collection('classes').doc(student.classId).update({
                 studentsOfClass: arrayUnion(user.uid)
             });
 
-            setStudentName('');
-            setStudentEmail('');
-            setStudentDob('');
-            setStudentPhone('');
-            setStudentPassword('');
-            setStudentClassId('');
+            setStudent({
+                name: '',
+                email: '',
+                dob: '',
+                phone: '',
+                password: '',
+                classId: ''
+            });
             setStudentSuccess('Student registered successfully!');
         } catch (error) {
             setStudentError(error.message);
@@ -82,8 +96,9 @@ const StudentRegistration = () => {
                     <input
                         type="text"
                         id="studentName"
-                        value={studentName}
-                        onChange={(e) => setStudentName(e.target.value)}
+                        name="name"
+                        value={student.name}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -92,8 +107,9 @@ const StudentRegistration = () => {
                     <input
                         type="email"
                         id="studentEmail"
-                        value={studentEmail}
-                        onChange={(e) => setStudentEmail(e.target.value)}
+                        name="email"
+                        value={student.email}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -102,8 +118,9 @@ const StudentRegistration = () => {
                     <input
                         type="date"
                         id="studentDob"
-                        value={studentDob}
-                        onChange={(e) => setStudentDob(e.target.value)}
+                        name="dob"
+                        value={student.dob}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -112,8 +129,9 @@ const StudentRegistration = () => {
                     <input
                         type="text"
                         id="studentPhone"
-                        value={studentPhone}
-                        onChange={(e) => setStudentPhone(e.target.value)}
+                        name="phone"
+                        value={student.phone}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -122,8 +140,9 @@ const StudentRegistration = () => {
                     <input
                         type="password"
                         id="studentPassword"
-                        value={studentPassword}
-                        onChange={(e) => setStudentPassword(e.target.value)}
+                        name="password"
+                        value={student.password}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -131,12 +150,13 @@ const StudentRegistration = () => {
                     <label htmlFor="studentClassId">Class:</label>
                     <select
                         id="studentClassId"
-                        value={studentClassId}
-                        onChange={(e) => setStudentClassId(e.target.value)}
+                        name="classId"
+                        value={student.classId}
+                        onChange={handleChange}
                         required
                     >
                         <option value="">Select Class</option>
-                        {classes.map((cls) => (
+                        {classes.map(cls => (
                             <option key={cls.id} value={cls.id}>
                                 {cls.name}
                             </option>
@@ -149,7 +169,7 @@ const StudentRegistration = () => {
             </form>
 
             <h3>Students</h3>
-            {/*students.length > 0 ? (
+            {students.length > 0 ? (
                 <table>
                     <thead>
                         <tr>
@@ -161,20 +181,20 @@ const StudentRegistration = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {students.map((student) => (
+                        {students.map(student => (
                             <tr key={student.id}>
                                 <td>{student.name}</td>
                                 <td>{student.email}</td>
                                 <td>{student.dob}</td>
                                 <td>{student.phone}</td>
-                                <td>{classes.find((cls) => cls.id === student.classId)?.name}</td>
+                                <td>{classes.find(cls => cls.id === student.classId)?.name}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             ) : (
                 <p>No students found.</p>
-            )*/}
+            )}
         </div>
     );
 };

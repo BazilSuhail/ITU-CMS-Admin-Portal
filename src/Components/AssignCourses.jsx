@@ -35,6 +35,7 @@ const AssignCourses = ({ departmentAbbreviation }) => {
 
                     const assignmentsSnapshot = await fs.collection('assignCourses').get();
                     setAssignments(assignmentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                    console.log(assignments)
                 } else {
                     setAssignError('No user is currently logged in.');
                 }
@@ -180,7 +181,7 @@ const AssignCourses = ({ departmentAbbreviation }) => {
                                 return className && className.startsWith(departmentAbbreviation);
                             })
                             .map((assignment, index) => (
-                                <tr key={index}>
+                                <tr key={index}> 
                                     <td>{courses.find(course => course.id === assignment.courseId)?.name}</td>
                                     <td>{instructors.find(instructor => instructor.id === assignment.instructorId)?.name}</td>
                                     <td>{classes.find(cls => cls.id === assignment.classId)?.name}</td>

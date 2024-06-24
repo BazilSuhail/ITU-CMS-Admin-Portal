@@ -19,7 +19,7 @@ const SignIn = () => {
       if (role === 'admin') {
         // Admin sign-in
         if (password === '112233') {
-          navigate('/admin-profile');
+          navigate('/registerdepartment');
         } else {
           setError('Incorrect admin password.');
         }

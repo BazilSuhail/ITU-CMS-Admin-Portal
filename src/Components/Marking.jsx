@@ -10,7 +10,7 @@ const Marking = () => {
     const [students, setStudents] = useState([]);
     const [criteria, setCriteria] = useState([]);
     const [marks, setMarks] = useState({});
-    const [newCriteria, setNewCriteria] = useState({ subject: '', weightage: '' });
+    const [newCriteria, setNewCriteria] = useState({ subject: '', weightage: '', totalMarks: '' });
     const [editingCriteria, setEditingCriteria] = useState(-1);
 
     useEffect(() => {
@@ -63,24 +63,12 @@ const Marking = () => {
     }, [assignCourseId]);
 
     const handleAddCriteria = () => {
-        if (newCriteria.subject && newCriteria.weightage) {
+        if (newCriteria.subject && newCriteria.weightage && newCriteria.totalMarks) {
             setCriteria([...criteria, { ...newCriteria }]);
-            setNewCriteria({ subject: '', weightage: '' });
+            setNewCriteria({ subject: '', weightage: '', totalMarks: '' });
         }
     };
 
-    /*
-    const handleMarksChange = (studentId, subject, value) => {
-        setMarks((prev) => ({
-            ...prev,
-            [studentId]: {
-                ...prev[studentId],
-                [subject]: parseFloat(value),
-            },
-        }));
-    };
-
-    */
     const handleSaveMarks = async () => {
         try {
             const marksData = {
@@ -115,10 +103,10 @@ const Marking = () => {
         setEditingCriteria(index);
     };
 
-    const handleSaveEditCriteria = (index, newSubject, newWeightage) => {
+    const handleSaveEditCriteria = (index, newSubject, newWeightage, newTotalMarks) => {
         setCriteria((prev) =>
             prev.map((item, i) =>
-                i === index ? { subject: newSubject, weightage: newWeightage } : item
+                i === index ? { subject: newSubject, weightage: newWeightage, totalMarks: newTotalMarks } : item
             )
         );
         setMarks((prev) => {
@@ -162,6 +150,12 @@ const Marking = () => {
                         value={newCriteria.weightage}
                         onChange={(e) => setNewCriteria({ ...newCriteria, weightage: e.target.value })}
                     />
+                    <input
+                        type="number"
+                        placeholder="Total Marks"
+                        value={newCriteria.totalMarks}
+                        onChange={(e) => setNewCriteria({ ...newCriteria, totalMarks: e.target.value })}
+                    />
                     <button onClick={handleAddCriteria}>Add Criteria</button>
                 </div>
                 <p>Total Weightage: {totalWeightage}%</p>
@@ -192,7 +186,18 @@ const Marking = () => {
                                             )
                                         }
                                     />
-                                    <button onClick={() => handleSaveEditCriteria(index, criterion.subject, criterion.weightage)}>
+                                    <input
+                                        type="number"
+                                        value={criterion.totalMarks}
+                                        onChange={(e) =>
+                                            setCriteria((prev) =>
+                                                prev.map((item, i) =>
+                                                    i === index ? { ...item, totalMarks: e.target.value } : item
+                                                )
+                                            )
+                                        }
+                                    />
+                                    <button onClick={() => handleSaveEditCriteria(index, criterion.subject, criterion.weightage, criterion.totalMarks)}>
                                         Save
                                     </button>
                                     <button onClick={() => setEditingCriteria(-1)}>Cancel</button>
@@ -200,7 +205,7 @@ const Marking = () => {
                             ) : (
                                 <div>
                                     <span>
-                                        {criterion.subject} ({criterion.weightage}%)
+                                        {criterion.subject} ({criterion.weightage}%) Total Marks: {criterion.totalMarks}
                                     </span>
                                     <button onClick={() => handleEditCriteria(index)}>Edit</button>
                                     <button onClick={() => handleDeleteCriteria(index)}>Delete</button>
@@ -219,7 +224,12 @@ const Marking = () => {
                                 <th>Student Name</th>
                                 {criteria.map((criterion, index) => (
                                     <th key={index}>
-                                        {criterion.subject} ({criterion.weightage}%)
+                                        {criterion.subject} ({criterion.weightage}%) (Total Marks: {criterion.totalMarks})
+                                    </th>
+                                ))}
+                                {criteria.map((criterion, index) => (
+                                    <th key={index}>
+                                        {criterion.subject} (Calculated)
                                     </th>
                                 ))}
                             </tr>
@@ -230,21 +240,40 @@ const Marking = () => {
                                     <td>{student.name}</td>
                                     {criteria.map((criterion, index) => (
                                         <td key={index}>
-                                            <div>
-                                                {marks[student.id]?.[criterion.subject] || ''}
-                                            </div>
+                                            <input
+                                                type="number"
+                                                value={marks[student.id]?.[criterion.subject] || ''}
+                                                onChange={(e) =>
+                                                    setMarks((prev) => ({
+                                                        ...prev,
+                                                        [student.id]: {
+                                                            ...prev[student.id],
+                                                            [criterion.subject]: parseFloat(e.target.value),
+                                                        },
+                                                    }))
+                                                }
+                                            />
                                         </td>
                                     ))}
-
+                                    {criteria.map((criterion, index) => (
+                                        <td key={index}>
+                                            {marks[student.id]?.[criterion.subject] !== undefined
+                                                ? (
+                                                    (marks[student.id][criterion.subject] / criterion.totalMarks) * criterion.weightage
+                                                ).toFixed(2)
+                                                : ''
+                                            }
+                                        </td>
+                                    ))}
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 ) : (
-                    <p>No criteria defined yet.</p>
+                    <p>No criteria defined yet</p>
                 )}
+                <button onClick={handleSaveMarks}>Save Marks</button>
             </div>
-            <button onClick={handleSaveMarks}>Edit Marks</button>
         </div>
     );
 };

@@ -37,12 +37,20 @@ const VerifyEnrollment = () => {
                     if (assignCourseDoc.exists) {
                         const assignCourse = assignCourseDoc.data();
                         const courseDoc = await fs.collection('courses').doc(assignCourse.courseId).get();
-                        if (courseDoc.exists) {
+                        const classDoc = await fs.collection('classes').doc(assignCourse.classId).get();
+                        const instructorDoc = await fs.collection('instructors').doc(assignCourse.instructorId).get();
+
+                        if (courseDoc.exists && classDoc.exists && instructorDoc.exists) {
                             const course = courseDoc.data();
+                            const classData = classDoc.data();
+                            const instructor = instructorDoc.data();
+
                             courseData[courseId] = {
                                 ...assignCourse,
                                 name: course.name,
-                                preRequisites: course.preRequisites || []
+                                preRequisites: course.preRequisites || [],
+                                className: classData.name,
+                                instructorName: instructor.name
                             };
                         }
                     }
@@ -107,6 +115,8 @@ const VerifyEnrollment = () => {
             {student ? (
                 <div>
                     <h3>Student: {student.name}</h3>
+                    <h3>Student: {student.email}</h3>
+                    <h3>Student: {student.rollNumber}</h3>
                     <h4>Applied Courses</h4>
                     {student.enrolledCourses && student.enrolledCourses.length > 0 ? (
                         <table>
@@ -114,6 +124,8 @@ const VerifyEnrollment = () => {
                                 <tr>
                                     <th>Course ID</th>
                                     <th>Course Name</th>
+                                    <th>Instructor</th>
+                                    <th>Class Name</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -122,6 +134,8 @@ const VerifyEnrollment = () => {
                                     <tr key={courseId}>
                                         <td>{courseId}</td>
                                         <td>{courseDetails[courseId]?.name || 'Loading...'}</td>
+                                        <td>{courseDetails[courseId]?.instructorName || 'Loading...'}</td>
+                                        <td>{courseDetails[courseId]?.className || 'Loading...'}</td>
                                         <td>
                                             <button
                                                 onClick={() => handleApprove(courseId)}

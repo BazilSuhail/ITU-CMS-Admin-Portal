@@ -8,13 +8,15 @@ import StudentRegistration from "./Components/StudentCreation";
 import CourseDetails from "./Components/CourseDetails";
 import Marking from "./Components/Marking";
 import AssignMarks from "./Components/AssignMarks";
-import ClassStudents from "./Components/Department_Classes/ClassStdudents";
+import ClassStudents from "./Components/Department_Classes/ClassStudents";
 import VerifyEnrollment from "./Components/Department_Classes/VerifyEnrollment";
 import DepartmentClasses from "./Components/Department_Classes/DepartmentClasses";
 
 import RegisterCourse from "./Components/Resgistrations/RegisterCourse";
 import RegisterInstructor from "./Components/Resgistrations/ResisterInstructor";
 import RegisterDepartment from "./Components/Resgistrations/RegisterDepartment";
+import AssignResults from "./AssigningResults/AssignResults";
+import AssignSemesterResult from "./AssigningResults/AssignSemesterResult";
 
 const App = () => {
   return (
@@ -35,7 +37,14 @@ const App = () => {
         <Route path="/assign-marks/:assignCourseId" element={<AssignMarks />} />
         
         <Route exact path="/" element={<SignIn />} />
+ 
+        {/*Results*/}
 
+        <Route path="/assignResults" element={<AssignResults />} />        
+        <Route path="/students-in-class/:classData" element={<ClassStudents />} />
+
+        <Route path="/assign-results/:classId/:studentId" element={<AssignSemesterResult />} c />
+        
 
         <Route path="/checkthenrollment" element={<DepartmentClasses />} />
         <Route path="/verify-enrollment/:classId" element={<ClassStudents />} />

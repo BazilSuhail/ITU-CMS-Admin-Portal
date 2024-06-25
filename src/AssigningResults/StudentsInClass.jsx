@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import { fs } from '../../Config/Config';
 import { useParams, useNavigate } from 'react-router-dom';
 
-const ClassStudents = () => {
+const StudentsInClass = () => {
     const { classId } = useParams();
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -36,7 +35,8 @@ const ClassStudents = () => {
     }, [classId]);
 
     const handleViewEnrollments = (studentId) => {
-        naviagate(`/verify-enrollment/${classId}/${studentId}`);
+        
+        naviagate(`/assign-results/${classId}/${studentId}`);
     };
 
     if (loading) {
@@ -80,4 +80,4 @@ const ClassStudents = () => {
     );
 };
 
-export default ClassStudents;
+export default StudentsInClass;

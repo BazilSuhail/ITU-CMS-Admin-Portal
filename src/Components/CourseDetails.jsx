@@ -25,28 +25,22 @@ const CourseDetails = () => {
           const assignmentData = assignmentDoc.data();
 
           const courseDoc = await fs.collection('courses').doc(assignmentData.courseId).get();
-          const classDoc = await fs.collection('classes').doc(assignmentData.classId).get();
           
-          const classData = classDoc.data();
-          const studentsList = classData.studentsOfClass || [];
-
-          // Fetch student names
-          const studentsData = await Promise.all(studentsList.map(async studentId => {
-            const studentDoc = await fs.collection('students').doc(studentId).get();
-            return {
-              id: studentDoc.id,
-              name: studentDoc.data().name,
-            };
-          }));
-
-          setStudents(studentsData);
-
           setCourseData({
             courseName: courseDoc.data().name,
-            className: classDoc.data().name,
             courseId: assignmentData.courseId,
-            classId: assignmentData.classId,
           });
+
+          // Fetch students enrolled in this course
+          const studentsSnapshot = await fs.collection('students').get();
+          const studentsList = studentsSnapshot.docs
+            .filter(doc => doc.data().currentCourses.includes(assignCourseId))
+            .map(doc => ({
+              id: doc.id,
+              name: doc.data().name,
+            }));
+
+          setStudents(studentsList);
 
           // Fetch attendance dates
           const attendanceDocRef = fs.collection('attendances').doc(assignCourseId);
@@ -108,6 +102,15 @@ const CourseDetails = () => {
     }
   };
 
+  const isSaveEnabled = () => {
+    if (!selectedDate) return false;
+    if (students.length === 0) return false;
+    for (const student of students) {
+      if (!attendance.hasOwnProperty(student.id)) return false;
+    }
+    return true;
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -122,7 +125,6 @@ const CourseDetails = () => {
       {courseData && (
         <div>
           <p><strong>Course Name:</strong> {courseData.courseName}</p>
-          <p><strong>Class Name:</strong> {courseData.className}</p>
         </div>
       )}
       <h3>Mark Attendance</h3>
@@ -153,7 +155,9 @@ const CourseDetails = () => {
           ))}
         </tbody>
       </table>
-      <button onClick={handleSaveAttendance}>Save Attendance</button>
+      <button onClick={handleSaveAttendance} disabled={!isSaveEnabled()}>
+        Save Attendance
+      </button>
 
       <EditAttendance 
         assignCourseId={assignCourseId} 

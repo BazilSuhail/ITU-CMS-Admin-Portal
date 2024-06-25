@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { fs } from '../Config/Config';
 
 const Marking = () => {
     const { assignCourseId } = useParams();
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [students, setStudents] = useState([]);
     const [criteria, setCriteria] = useState([]);
     const [marks, setMarks] = useState({});
-    const [newCriteria, setNewCriteria] = useState({ subject: '', weightage: '', totalMarks: '' });
+    const [newCriteria, setNewCriteria] = useState({ assessment: '', weightage: '', totalMarks: '' });
     const [editingCriteria, setEditingCriteria] = useState(-1);
+    const [isEditing, setIsEditing] = useState(false);
+    const [saveMessage, setSaveMessage] = useState('');
+
+    const grades = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F', 'I'];
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,38 +22,24 @@ const Marking = () => {
             setError(null);
 
             try {
-                const assignCourseDoc = await fs.collection('assignCourses').doc(assignCourseId).get();
-                if (assignCourseDoc.exists) {
-                    const assignCourseData = assignCourseDoc.data();
-                    const classDoc = await fs.collection('classes').doc(assignCourseData.classId).get();
-                    if (classDoc.exists) {
-                        const classData = classDoc.data();
-                        const studentsList = classData.studentsOfClass || [];
-                        const studentsData = await Promise.all(
-                            studentsList.map(async (studentId) => {
-                                const studentDoc = await fs.collection('students').doc(studentId).get();
-                                return {
-                                    id: studentDoc.id,
-                                    name: studentDoc.data().name,
-                                };
-                            })
-                        );
-                        setStudents(studentsData);
-                        const marksDoc = await fs.collection('studentsMarks').doc(assignCourseId).get();
-                        if (marksDoc.exists) {
-                            const marksData = marksDoc.data();
-                            setCriteria(marksData.criteriaDefined || []);
-                            const marksObject = marksData.marksOfStudents.reduce((acc, studentMarks) => {
-                                acc[studentMarks.studentId] = studentMarks.marks;
-                                return acc;
-                            }, {});
-                            setMarks(marksObject);
-                        }
-                    } else {
-                        setError('Class data not found');
-                    }
-                } else {
-                    setError('Assigned course data not found');
+                const studentsSnapshot = await fs.collection('students').get();
+                const studentsData = studentsSnapshot.docs
+                    .filter(doc => doc.data().currentCourses.includes(assignCourseId))
+                    .map(doc => ({
+                        id: doc.id,
+                        name: doc.data().name,
+                    }));
+                setStudents(studentsData);
+
+                const marksDoc = await fs.collection('studentsMarks').doc(assignCourseId).get();
+                if (marksDoc.exists) {
+                    const marksData = marksDoc.data();
+                    setCriteria(marksData.criteriaDefined || []);
+                    const marksObject = marksData.marksOfStudents.reduce((acc, studentMarks) => {
+                        acc[studentMarks.studentId] = { ...studentMarks.marks, grade: studentMarks.grade || 'I' };
+                        return acc;
+                    }, {});
+                    setMarks(marksObject);
                 }
             } catch (error) {
                 setError(error.message);
@@ -63,9 +52,9 @@ const Marking = () => {
     }, [assignCourseId]);
 
     const handleAddCriteria = () => {
-        if (newCriteria.subject && newCriteria.weightage && newCriteria.totalMarks) {
+        if (newCriteria.assessment && newCriteria.weightage && newCriteria.totalMarks) {
             setCriteria([...criteria, { ...newCriteria }]);
-            setNewCriteria({ subject: '', weightage: '', totalMarks: '' });
+            setNewCriteria({ assessment: '', weightage: '', totalMarks: '' });
         }
     };
 
@@ -76,12 +65,13 @@ const Marking = () => {
                 marksOfStudents: Object.keys(marks).map((studentId) => ({
                     studentId,
                     marks: marks[studentId],
+                    grade: marks[studentId].grade,
                 })),
             };
 
             await fs.collection('studentsMarks').doc(assignCourseId).set(marksData);
 
-            navigate(`/assign-marks/${assignCourseId}`);
+            setSaveMessage('Marks saved successfully!');
         } catch (error) {
             setError(error.message);
         }
@@ -92,7 +82,7 @@ const Marking = () => {
         setMarks((prev) => {
             const newMarks = { ...prev };
             Object.keys(newMarks).forEach((studentId) => {
-                const { [criteria[index].subject]: _, ...rest } = newMarks[studentId];
+                const { [criteria[index].assessment]: _, ...rest } = newMarks[studentId];
                 newMarks[studentId] = rest;
             });
             return newMarks;
@@ -103,18 +93,18 @@ const Marking = () => {
         setEditingCriteria(index);
     };
 
-    const handleSaveEditCriteria = (index, newSubject, newWeightage, newTotalMarks) => {
+    const handleSaveEditCriteria = (index, newAssessment, newWeightage, newTotalMarks) => {
         setCriteria((prev) =>
             prev.map((item, i) =>
-                i === index ? { subject: newSubject, weightage: newWeightage, totalMarks: newTotalMarks } : item
+                i === index ? { assessment: newAssessment, weightage: newWeightage, totalMarks: newTotalMarks } : item
             )
         );
         setMarks((prev) => {
             const newMarks = { ...prev };
             Object.keys(newMarks).forEach((studentId) => {
-                if (newMarks[studentId][criteria[index].subject] !== undefined) {
-                    newMarks[studentId][newSubject] = newMarks[studentId][criteria[index].subject];
-                    delete newMarks[studentId][criteria[index].subject];
+                if (newMarks[studentId][criteria[index].assessment] !== undefined) {
+                    newMarks[studentId][newAssessment] = newMarks[studentId][criteria[index].assessment];
+                    delete newMarks[studentId][criteria[index].assessment];
                 }
             });
             return newMarks;
@@ -123,6 +113,9 @@ const Marking = () => {
     };
 
     const totalWeightage = criteria.reduce((total, item) => total + parseFloat(item.weightage), 0);
+
+    const allCriteriaFilled = criteria.every(c => c.assessment && c.weightage && c.totalMarks);
+    const allMarksEntered = students.every(student => criteria.every(c => marks[student.id]?.[c.assessment] !== undefined));
 
     if (loading) {
         return <p>Loading...</p>;
@@ -140,9 +133,9 @@ const Marking = () => {
                 <div>
                     <input
                         type="text"
-                        placeholder="Subject"
-                        value={newCriteria.subject}
-                        onChange={(e) => setNewCriteria({ ...newCriteria, subject: e.target.value })}
+                        placeholder="Assessment"
+                        value={newCriteria.assessment}
+                        onChange={(e) => setNewCriteria({ ...newCriteria, assessment: e.target.value })}
                     />
                     <input
                         type="number"
@@ -166,11 +159,11 @@ const Marking = () => {
                                 <div>
                                     <input
                                         type="text"
-                                        value={criterion.subject}
+                                        value={criterion.assessment}
                                         onChange={(e) =>
                                             setCriteria((prev) =>
                                                 prev.map((item, i) =>
-                                                    i === index ? { ...item, subject: e.target.value } : item
+                                                    i === index ? { ...item, assessment: e.target.value } : item
                                                 )
                                             )
                                         }
@@ -197,7 +190,7 @@ const Marking = () => {
                                             )
                                         }
                                     />
-                                    <button onClick={() => handleSaveEditCriteria(index, criterion.subject, criterion.weightage, criterion.totalMarks)}>
+                                    <button onClick={() => handleSaveEditCriteria(index, criterion.assessment, criterion.weightage, criterion.totalMarks)}>
                                         Save
                                     </button>
                                     <button onClick={() => setEditingCriteria(-1)}>Cancel</button>
@@ -205,7 +198,7 @@ const Marking = () => {
                             ) : (
                                 <div>
                                     <span>
-                                        {criterion.subject} ({criterion.weightage}%) Total Marks: {criterion.totalMarks}
+                                        {criterion.assessment} ({criterion.weightage}%) Total Marks: {criterion.totalMarks}
                                     </span>
                                     <button onClick={() => handleEditCriteria(index)}>Edit</button>
                                     <button onClick={() => handleDeleteCriteria(index)}>Delete</button>
@@ -224,14 +217,15 @@ const Marking = () => {
                                 <th>Student Name</th>
                                 {criteria.map((criterion, index) => (
                                     <th key={index}>
-                                        {criterion.subject} ({criterion.weightage}%) (Total Marks: {criterion.totalMarks})
+                                        {criterion.assessment} ({criterion.weightage}%) (Total Marks: {criterion.totalMarks})
                                     </th>
                                 ))}
                                 {criteria.map((criterion, index) => (
                                     <th key={index}>
-                                        {criterion.subject} (Calculated)
+                                        {criterion.assessment} (Calculated)
                                     </th>
                                 ))}
+                                <th>Grade</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -242,29 +236,48 @@ const Marking = () => {
                                         <td key={index}>
                                             <input
                                                 type="number"
-                                                value={marks[student.id]?.[criterion.subject] || ''}
+                                                value={marks[student.id]?.[criterion.assessment] || ''}
                                                 onChange={(e) =>
                                                     setMarks((prev) => ({
                                                         ...prev,
                                                         [student.id]: {
                                                             ...prev[student.id],
-                                                            [criterion.subject]: parseFloat(e.target.value),
+                                                            [criterion.assessment]: parseFloat(e.target.value),
                                                         },
                                                     }))
                                                 }
+                                                disabled={!isEditing}
                                             />
                                         </td>
                                     ))}
                                     {criteria.map((criterion, index) => (
                                         <td key={index}>
-                                            {marks[student.id]?.[criterion.subject] !== undefined
+                                            {marks[student.id]?.[criterion.assessment] !== undefined
                                                 ? (
-                                                    (marks[student.id][criterion.subject] / criterion.totalMarks) * criterion.weightage
+                                                    (marks[student.id][criterion.assessment] / criterion.totalMarks) * criterion.weightage
                                                 ).toFixed(2)
                                                 : ''
                                             }
                                         </td>
                                     ))}
+                                    <td>
+                                        <select
+                                            value={marks[student.id]?.grade || 'I'}
+                                            onChange={(e) =>
+                                                setMarks((prev) => ({
+                                                    ...prev,
+                                                    [student.id]: {
+                                                        ...prev[student.id],
+                                                        grade: e.target.value,
+                                                    },
+                                                }))
+                                            }
+                                        >
+                                            {grades.map((grade) => (
+                                                <option key={grade} value={grade}>{grade}</option>
+                                            ))}
+                                        </select>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -272,7 +285,11 @@ const Marking = () => {
                 ) : (
                     <p>No criteria defined yet</p>
                 )}
-                <button onClick={handleSaveMarks}>Save Marks</button>
+                <button onClick={handleSaveMarks} disabled={!allCriteriaFilled || !allMarksEntered}>Save Marks</button>
+                {saveMessage && <p>{saveMessage}</p>}
+                <button onClick={() => setIsEditing(!isEditing)}>
+                    {isEditing ? 'Stop Editing' : 'Edit Marks'}
+                </button>
             </div>
         </div>
     );

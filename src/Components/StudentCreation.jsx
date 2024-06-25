@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { auth, fs } from '../Config/Config';
-import { arrayUnion } from 'firebase/firestore'; 
+import { arrayUnion } from 'firebase/firestore';
 
 const StudentRegistration = () => {
+    const navigate = useNavigate();
     const [student, setStudent] = useState({
         name: '',
         email: '',
@@ -19,48 +21,16 @@ const StudentRegistration = () => {
     const [studentError, setStudentError] = useState(null);
     const [studentSuccess, setStudentSuccess] = useState(null);
     const [classes, setClasses] = useState([]);
-    const [students, setStudents] = useState([]);
-    const [currentUser, setCurrentUser] = useState(null);
-    const [currentUserPassword, setCurrentUserPassword] = useState('');
-    const [departmentAbbreviation, setDepartmentAbbreviation] = useState('');
 
     useEffect(() => {
-        const fetchClassesAndStudents = async () => {
+        const fetchClasses = async () => {
             try {
                 const user = auth.currentUser;
                 if (user) {
-                    setCurrentUser(user);
-                    // Here you need to set the current user's password manually
-                    // This is for demonstration purposes; in a real app, you might need to handle this securely
-                    setCurrentUserPassword('current_user_password'); 
-
-                    // Fetch department details
-                    const departmentSnapshot = await fs.collection('departments').doc(user.uid).get();
-                    const departmentData = departmentSnapshot.data();
-                    setDepartmentAbbreviation(departmentData.abbreviation);
-
                     // Fetch classes
                     const classesSnapshot = await fs.collection('classes').get();
                     const classesList = classesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     setClasses(classesList);
-
-                    // Create a lookup for class names
-                    const classLookup = {};
-                    classesList.forEach(cls => {
-                        classLookup[cls.id] = cls.name;
-                    });
-
-                    // Fetch students
-                    const studentsSnapshot = await fs.collection('students').get();
-                    const studentsList = studentsSnapshot.docs.map(doc => {
-                        const studentData = doc.data();
-                        return { id: doc.id, ...studentData, className: classLookup[studentData.classId] };
-                    });
-
-                    // Filter students based on department abbreviation
-                    const filteredStudents = studentsList.filter(student => student.className && student.className.substring(0, 2) === departmentAbbreviation);
-
-                    setStudents(filteredStudents);
                 } else {
                     setStudentError('No user is currently logged in.');
                 }
@@ -69,8 +39,8 @@ const StudentRegistration = () => {
             }
         };
 
-        fetchClassesAndStudents();
-    }, [departmentAbbreviation]);
+        fetchClasses();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -80,14 +50,6 @@ const StudentRegistration = () => {
         }));
     };
 
-    const reauthenticateUser = async () => {
-        const credential = auth.EmailAuthProvider.credential(
-            currentUser.email,
-            currentUserPassword
-        );
-        await currentUser.reauthenticateWithCredential(credential);
-    };
-
     const handleRegisterStudent = async (e) => {
         e.preventDefault();
         setStudentLoading(true);
@@ -95,9 +57,6 @@ const StudentRegistration = () => {
         setStudentSuccess(null);
 
         try {
-            // Reauthenticate the current user
-            await reauthenticateUser();
-
             // Register the new student
             const userCredential = await auth.createUserWithEmailAndPassword(student.email, student.password);
             const user = userCredential.user;
@@ -124,6 +83,7 @@ const StudentRegistration = () => {
                 currentCourses: []
             });
             setStudentSuccess('Student registered successfully!');
+            navigate('/');
         } catch (error) {
             setStudentError(error.message);
         } finally {
@@ -224,36 +184,6 @@ const StudentRegistration = () => {
                     {studentLoading ? 'Registering...' : 'Register Student'}
                 </button>
             </form>
-
-            <h3>Students</h3>
-            {students.length > 0 ? (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Date of Birth</th>
-                            <th>Phone</th>
-                            <th>Class</th>
-                            <th>Roll Number</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {students.map(student => (
-                            <tr key={student.id}>
-                                <td>{student.name}</td>
-                                <td>{student.email}</td>
-                                <td>{student.dob}</td>
-                                <td>{student.phone}</td>
-                                <td>{student.className}</td>
-                                <td>{student.rollNumber}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            ) : (
-                <p>No students found.</p>
-            )}
         </div>
     );
 };

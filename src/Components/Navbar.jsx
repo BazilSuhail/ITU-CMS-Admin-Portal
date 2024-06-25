@@ -24,6 +24,7 @@ const Navbar = () => {
 
         <NavLink to="/department-profile" className="nav-links">Department Profile</NavLink>
         <NavLink to="/checkthenrollment" className="nav-links">Approve Enrollment</NavLink>
+        <NavLink to="/assignResults" className="nav-links">Assign Results</NavLink>
         <NavLink to="/student-creation" className="nav-links">Student Creation</NavLink>
 
 

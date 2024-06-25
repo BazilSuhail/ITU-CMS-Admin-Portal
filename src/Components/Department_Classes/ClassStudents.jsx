@@ -36,9 +36,13 @@ const ClassStudents = () => {
     }, [classId]);
 
     const handleViewEnrollments = (studentId) => {
-        {/*naviagate(`/verify-enrollment/${classId}/${studentId}`);
-        */}
-        naviagate(`/assign-results/${classId}/${studentId}`);
+        naviagate(`/verify-enrollment/${classId}/${studentId}`);
+        
+    };
+    
+    const handlewithdrawEnrollments = (studentId) => {
+        naviagate(`/withdraw-enrollment/${classId}/${studentId}`);
+        
     };
 
     if (loading) {
@@ -70,6 +74,8 @@ const ClassStudents = () => {
                                 <td>{student.email}</td>
                                 <td>
                                     <button onClick={() => handleViewEnrollments(student.id)}>View Enrollments</button>
+                                </td><td>
+                                    <button onClick={() => handlewithdrawEnrollments(student.id)}>Withdraw Enrollments</button>
                                 </td>
                             </tr>
                         ))}

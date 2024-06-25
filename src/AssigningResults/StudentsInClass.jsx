@@ -1,5 +1,7 @@
-import { fs } from '../../Config/Config';
+import React, { useState, useEffect } from 'react';
+import { fs } from '../Config/Config';
 import { useParams, useNavigate } from 'react-router-dom';
+
 
 const StudentsInClass = () => {
     const { classId } = useParams();

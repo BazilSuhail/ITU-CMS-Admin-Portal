@@ -105,6 +105,10 @@ const RegisterDepartment = () => {
         }
     };
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div>
             <h2>Register Department</h2>

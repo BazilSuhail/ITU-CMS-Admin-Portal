@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fs,auth } from '../Config/Config';
+import { fs,auth } from '../../Config/Config';
 import { useNavigate } from 'react-router-dom';
 
 const AssignResults = () => {
@@ -34,7 +34,7 @@ const AssignResults = () => {
     }, []);
 
     const handleViewStudents = (classId) => {
-        navigate(`/verify-enrollment/${classId}`);
+        navigate(`/students-in-class/${classId}`);
     };
 
     if (loading) {

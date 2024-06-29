@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { fs } from '../Config/Config';
+import { fs } from '../../Config/Config';
 import StudentAttendance from './StudentAttendance';
 
 const EditAttendance = ({ assignCourseId, students, attendanceDates }) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fs } from '../Config/Config';
+import { fs } from '../../Config/Config';
 import { useParams, useNavigate } from 'react-router-dom';
 
 
@@ -69,7 +69,7 @@ const StudentsInClass = () => {
                                 <td>{student.dob}</td>
                                 <td>{student.email}</td>
                                 <td>
-                                    <button onClick={() => handleViewEnrollments(student.id)}>View Enrollments</button>
+                                    <button onClick={() => handleViewEnrollments(student.id)}>Calculate Results</button>
                                 </td>
                             </tr>
                         ))}

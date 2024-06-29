@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fs } from '../Config/Config';
+import { fs } from '../../Config/Config';
 
 const AssignMarks = () => {
     const { assignCourseId } = useParams();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth, fs } from '../Config/Config';
+import { auth, fs } from '../../Config/Config';
 
 const AssignCourses = ({ departmentAbbreviation }) => {
     const [courses, setCourses] = useState([]);
@@ -13,14 +13,14 @@ const AssignCourses = ({ departmentAbbreviation }) => {
     const [assignLoading, setAssignLoading] = useState(false);
     const [assignError, setAssignError] = useState(null);
     const [assignSuccess, setAssignSuccess] = useState(null);
-    const [department, setDepartment] = useState(null); // Added state for department
+    const [department, setDepartment] = useState(null);
+    const [loading, setLoading] = useState(true); // Added state for loader
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const user = auth.currentUser;
                 if (user) {
-                    // Fetch the department of the logged-in user
                     const departmentSnapshot = await fs.collection('departments').doc(user.uid).get();
                     const departmentData = departmentSnapshot.data();
                     setDepartment(departmentData);
@@ -35,12 +35,13 @@ const AssignCourses = ({ departmentAbbreviation }) => {
 
                     const assignmentsSnapshot = await fs.collection('assignCourses').get();
                     setAssignments(assignmentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-                    console.log(assignments)
                 } else {
                     setAssignError('No user is currently logged in.');
                 }
             } catch (err) {
                 setAssignError(err.message);
+            } finally {
+                setLoading(false); // Set loading to false after fetching data
             }
         };
 
@@ -104,6 +105,10 @@ const AssignCourses = ({ departmentAbbreviation }) => {
             setAssignLoading(false);
         }
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div>
@@ -181,7 +186,7 @@ const AssignCourses = ({ departmentAbbreviation }) => {
                                 return className && className.startsWith(departmentAbbreviation);
                             })
                             .map((assignment, index) => (
-                                <tr key={index}> 
+                                <tr key={index}>
                                     <td>{courses.find(course => course.id === assignment.courseId)?.name}</td>
                                     <td>{instructors.find(instructor => instructor.id === assignment.instructorId)?.name}</td>
                                     <td>{classes.find(cls => cls.id === assignment.classId)?.name}</td>
@@ -192,25 +197,8 @@ const AssignCourses = ({ departmentAbbreviation }) => {
             ) : (
                 <p>No assignments found.</p>
             )}
-
         </div>
     );
 };
 
 export default AssignCourses;
-/*
-<tbody>
-            {assignments
-                .filter(assignment => {
-                    const className = classes.find(cls => cls.id === assignment.classId)?.name;
-                    return className && className.startsWith(props.abbreviation);
-                })
-                .map((assignment, index) => (
-                    <tr key={index}>
-                        <td>{courses.find(course => course.id === assignment.courseId)?.name}</td>
-                        <td>{instructors.find(instructor => instructor.id === assignment.instructorId)?.name}</td>
-                        <td>{classes.find(cls => cls.id === assignment.classId)?.name}</td>
-                    </tr>
-                ))}
-        </tbody>
-*/

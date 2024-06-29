@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { fs ,FieldValue} from '../Config/Config';
+import { fs ,FieldValue} from '../../Config/Config';
 
 const gradePoints = {
   'A+': 4.00,

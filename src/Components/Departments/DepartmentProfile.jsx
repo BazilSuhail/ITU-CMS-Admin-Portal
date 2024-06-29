@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth, fs } from '../Config/Config';
+import { auth, fs } from '../../Config/Config';
 import AssignCourses from './AssignCourses';
 
 const DepartmentProfile = () => {

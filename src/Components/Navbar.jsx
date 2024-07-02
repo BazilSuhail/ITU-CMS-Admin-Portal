@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { auth, fs } from '../Config/Config'; 
+import { auth, fs } from '../Config/Config';
+import { useAuth } from "./AuthContext";
+import { IoMdLogOut } from "react-icons/io";
+import profile from "./itu.png"
 
 const Navbar = () => {
-  const [userType, setUserType] = useState("");
+  const { userType, setUserType } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,86 +28,45 @@ const Navbar = () => {
     };
 
     fetchUserType();
-  }, []);
+  }, [setUserType]);
 
   const handleLogout = () => {
     auth.signOut();
+    setUserType("");
     navigate("/");
   };
 
   return (
-    <div className="navbar">
-      <div className="links">
-        {userType === "department" && (
-          <>
-          <NavLink to="/department-profile" className="nav-links">Department Profile</NavLink>
-          <NavLink to="/checkthenrollment" className="nav-links">Approve Enrollment</NavLink>
-          <NavLink to="/assignResults" className="nav-links">Assign Results</NavLink>
-          <NavLink to="/student-creation" className="nav-links">Student Creation</NavLink>
-          </>
-        )}
-        {userType === "instructor" && (
-          <NavLink to="/instructor-profile" className="nav-links">Instructor Profile</NavLink>
-        )}
-        {userType === "admin" && (
-          <>
-          <NavLink to="/registerdepartment" className="nav-links">Register Departments</NavLink>
-          <NavLink to="/registerinstructor" className="nav-links">Register Instructor</NavLink>
-          <NavLink to="/registercourse" className="nav-links">Register Course</NavLink>
-          </>
-        )}
+    <nav className="w-[98vw] mx-auto h-[80px] p-[4px]">
+      <div className="bg-custom-blue h-[100%] flex items-center justify-between rounded-lg">
+
+      <img src={profile} alt="" className="ml-[25px] w-[55px] h-[55px] " />
+        <div className="flex text-white items-center">
+          {userType === "department" && (
+            <div className="ml-[10px]">
+              <NavLink to="/department-profile" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Dashboard</NavLink>
+              <NavLink to="/assign-courses" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Courses Details</NavLink>
+              <NavLink to="/checkthenrollment" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Enrollments</NavLink>
+              <NavLink to="/assignResults" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Result Compilation</NavLink>
+              <NavLink to="/student-creation" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Student Accounts</NavLink>
+            </div>
+          )}
+
+          {userType === "instructor" && (
+            <NavLink to="/instructor-profile" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] "></NavLink>
+          )}
+          {userType === "admin" && (
+            <>
+              <NavLink to="/registerdepartment" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Register Departments</NavLink>
+              <NavLink to="/registerinstructor" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Register Instructor</NavLink>
+              <NavLink to="/registercourse" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Register Course</NavLink>
+            </>
+          )}
+        </div>
+        {userType && <button className="text-lg bg-red-600 text-white rounded-md w-[100px] h-[36px] my-auto mr-[10px] flex items-center" onClick={handleLogout}> <IoMdLogOut className="mt-[2px] mx-[5px] text-2xl" /><p>Logout</p></button>}
       </div>
-      <button onClick={handleLogout}>Logout</button>
-    </div>
+    </nav>
   );
 };
 
 export default Navbar;
-
-
-/*import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { auth } from '../Config/Config'; 
-
-const Navbar = () => {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    auth.signOut();
-    navigate("/");
-  };
-
-  return (
-    <div className={"navbar"}>
-
-      <div className="links">
-
-
-        <NavLink to="/registerdepartment" className="nav-links">Register Departments</NavLink>
-        <NavLink to="/registerinstructor" className="nav-links">Register Instructor</NavLink>
-        <NavLink to="/registercourse" className="nav-links">Register Course</NavLink>
-
-
-        <NavLink to="/department-profile" className="nav-links">Department Profile</NavLink>
-        <NavLink to="/checkthenrollment" className="nav-links">Approve Enrollment</NavLink>
-        <NavLink to="/assignResults" className="nav-links">Assign Results</NavLink>
-        <NavLink to="/student-creation" className="nav-links">Student Creation</NavLink>
-
-
-        <NavLink to="/instructor-profile" className="nav-links">Instructor Profile</NavLink> 
-
-        <button onClick={handleLogout} className="logout-button">Logout</button>
-        
-        <NavLink to="/registerdepartment" className="nav-links">Admin Registering</NavLink>
-        <NavLink to="/" className="nav-links">Sign In</NavLink>
-        <NavLink to="/department-profile" className="nav-links">Department-profile</NavLink>
-        <NavLink to="/checkthenrollment" className="nav-links">Approve enrollment</NavLink>
-        <NavLink to="/student-creation" className="nav-links">Student Creation</NavLink>
-        <NavLink to="/instructor-profile" className="nav-links">Instructor-profile</NavLink>
-        
-      </div>
-    </div>
-  );
-};
-
-export default Navbar;*/

@@ -13,7 +13,9 @@ const CourseDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [attendanceDates, setAttendanceDates] = useState([]);
-
+  const [latestAttendance, setLatestAttendance] = useState(null);
+  const [formLoading, setFormLoading] = useState(false);
+  const [editForm, seteditForm] = useState(false);
   useEffect(() => {
     const fetchCourseDetails = async () => {
       setLoading(true);
@@ -25,7 +27,6 @@ const CourseDetails = () => {
           const assignmentData = assignmentDoc.data();
 
           const courseDoc = await fs.collection('courses').doc(assignmentData.courseId).get();
-          
           setCourseData({
             courseName: courseDoc.data().name,
             courseId: assignmentData.courseId,
@@ -42,13 +43,20 @@ const CourseDetails = () => {
 
           setStudents(studentsList);
 
-          // Fetch attendance dates
+          // Fetch attendance dates and the latest attendance
           const attendanceDocRef = fs.collection('attendances').doc(assignCourseId);
           const attendanceDoc = await attendanceDocRef.get();
 
           if (attendanceDoc.exists) {
             const attendanceData = attendanceDoc.data().attendances;
             setAttendanceDates(attendanceData.map(record => record.date));
+
+            if (attendanceData.length > 0) {
+              const latest = attendanceData.reduce((latestRecord, currentRecord) => {
+                return new Date(latestRecord.date) > new Date(currentRecord.date) ? latestRecord : currentRecord;
+              });
+              setLatestAttendance(latest);
+            }
           }
         } else {
           setError('No assignment data found');
@@ -71,6 +79,7 @@ const CourseDetails = () => {
   };
 
   const handleSaveAttendance = async () => {
+    setFormLoading(true);
     try {
       const attendanceDocRef = fs.collection('attendances').doc(assignCourseId);
       const attendanceDoc = await attendanceDocRef.get();
@@ -94,11 +103,23 @@ const CourseDetails = () => {
         });
       }
 
-      // Reset form
+      // Reset form and refresh latest attendance
       setSelectedDate('');
       setAttendance({});
+
+      const updatedAttendanceDoc = await attendanceDocRef.get();
+      if (updatedAttendanceDoc.exists) {
+        const updatedAttendanceData = updatedAttendanceDoc.data().attendances;
+        const latest = updatedAttendanceData.reduce((latestRecord, currentRecord) => {
+          return new Date(latestRecord.date) > new Date(currentRecord.date) ? latestRecord : currentRecord;
+        });
+        setLatestAttendance(latest);
+        setAttendanceDates(updatedAttendanceData.map(record => record.date));
+      }
     } catch (error) {
       setError(error.message);
+    } finally {
+      setFormLoading(false);
     }
   };
 
@@ -111,59 +132,83 @@ const CourseDetails = () => {
     return true;
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
-
   return (
     <div>
-      <h2>Course Details</h2>
-      {courseData && (
-        <div>
-          <p><strong>Course Name:</strong> {courseData.courseName}</p>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>Error: {error}</p>
+      ) : (
+        <div className='h-full w-full flex flex-col'>
+          {courseData && (
+            <>
+              <h2 className='text-custom-blue my-[12px] border- text-2xl text-center font-bold p-[8px] rounded-2xl'>"{courseData.courseName}" Attendance</h2>
+              <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
+
+            </>
+          )}
+
+          {formLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <div className='my-[8px] flex flex-col w-[95%] lg::w-[65%] mx-auto p-[15px] justify-center bg-gray-200 rounded-xl overflow-x-auto'>
+              <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Mark Attendance</h2>
+
+              <label className="block text-lg  font-medium text-gray-700">
+                Select Date:
+              </label>
+              <input
+                type="date"
+                className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                required
+              />
+              <div class="relative mt-[15px] overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead class="text-md text-gray-200 uppercase bg-gray-700">
+                    <tr className='text-center'>
+                      <th scope="col" class="px-6 py-3 whitespace-nowrap">Student's Name</th>
+                      <th scope="col" class="px-6 py-3 whitespace-nowrap">Attendance Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {students.map((student) => (
+                      <StudentAttendance
+                        key={student.id}
+                        student={student}
+                        attendance={attendance}
+                        onAttendanceChange={handleAttendanceChange}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <button onClick={handleSaveAttendance}
+                className='my-[15px] py-[8px] w-[180px]  mr-auto justify-center rounded-md bg-blue-950 text-lg font-bold hover:text-custom-blue hover:bg-white text-white'
+                disabled={!isSaveEnabled()}>
+                Save Attendance
+              </button>
+            </div>
+          )}
+
+          <button onClick={() => seteditForm(!editForm)}
+            className='shadow-custom my-[55px]-light py-[8px] w-[385px] lg:w-[55vw] mx-auto rounded-xl bg-green-900 text-2xl font-bold hover:text-green-900 hover:bg-white hover:shadow-custom-light text-white'
+              >
+                {editForm ? 'Close Review' : 'Show Attendance Records' }
+          </button>
+          {
+            editForm && (
+              <EditAttendance
+                assignCourseId={assignCourseId}
+                students={students}
+                attendanceDates={attendanceDates}
+                latestAttendance={latestAttendance}
+              />
+            )
+          }
         </div>
       )}
-      <h3>Mark Attendance</h3>
-      <label>
-        Select Date:
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          required
-        />
-      </label>
-      <table>
-        <thead>
-          <tr>
-            <th>Student Name</th>
-            <th>Attendance</th>
-          </tr>
-        </thead>
-        <tbody>
-          {students.map((student) => (
-            <StudentAttendance
-              key={student.id}
-              student={student}
-              attendance={attendance}
-              onAttendanceChange={handleAttendanceChange}
-            />
-          ))}
-        </tbody>
-      </table>
-      <button onClick={handleSaveAttendance} disabled={!isSaveEnabled()}>
-        Save Attendance
-      </button>
-
-      <EditAttendance 
-        assignCourseId={assignCourseId} 
-        students={students} 
-        attendanceDates={attendanceDates} 
-      />
     </div>
   );
 };

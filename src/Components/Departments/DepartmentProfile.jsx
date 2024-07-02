@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { auth, fs } from '../../Config/Config';
-import AssignCourses from './AssignCourses';
 
 const DepartmentProfile = () => {
-    const [departmentData, setDepartmentData] = useState(null);
+    const [departmentData, setDepartmentData] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [className, setClassName] = useState('');
@@ -11,6 +10,8 @@ const DepartmentProfile = () => {
     const [classError, setClassError] = useState(null);
     const [classSuccess, setClassSuccess] = useState(null);
     const [classes, setClasses] = useState([]);
+
+    const [openForm, setOpenForm] = useState(false);
 
     useEffect(() => {
         const fetchDepartmentData = async () => {
@@ -27,7 +28,8 @@ const DepartmentProfile = () => {
                             return { id: doc.id, ...classData, studentsOfClass: classData.studentsOfClass || [] };
                         });
                         setClasses(classesList);
-                    } else {
+                    }
+                    else {
                         setError('No department data found.');
                     }
                 } else {
@@ -81,58 +83,87 @@ const DepartmentProfile = () => {
     }
 
     return (
-        <div>
-            <h2>Department Profile</h2>
+        <div className='h-full w-full'>
+            <h2 className='text-custom-blue my-[12px] border- text-2xl text-center font-bold p-[8px] rounded-2xl'>Department Profile</h2>
+            <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
+
             {departmentData && (
-                <div>
-                    <p><strong>Name:</strong> {departmentData.name}</p>
-                    <p><strong>Email:</strong> {departmentData.email}</p>
-                    <p><strong>Abbreviation:</strong> {departmentData.abbreviation}</p>
+                <div className='grid grid-cols-1 xsx:grid-cols-3 gap-x-[6px] gap-y-[15px] p-[8px]'>
+                    <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+                        <div className='ml-[5px] text-md'>Roll Number:</div>
+                        <div className='text-3xl xsx:text-2xl '>{departmentData.name}</div>
+                    </div>
+                    <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+                        <div className='ml-[5px] text-md'>Roll Number:</div>
+                        <div className='text-3xl xsx:text-2xl '>{departmentData.email}</div>
+                    </div>
+                    <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+                        <div className='ml-[5px] text-md'>Roll Number:</div>
+                        <div className='text-3xl xsx:text-2xl '>{departmentData.abbreviation}</div>
+                    </div>
                 </div>
             )}
 
-            <h3>Create Class</h3>
-            {classError && <p style={{ color: 'red' }}>{classError}</p>}
-            {classSuccess && <p style={{ color: 'green' }}>{classSuccess}</p>}
-            <form onSubmit={handleCreateClass}>
-                <div>
-                    <label htmlFor="className">Class Name:</label>
-                    <input
-                        type="text"
-                        id="className"
-                        value={className}
-                        onChange={(e) => setClassName(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" disabled={classLoading}>
-                    {classLoading ? 'Creating...' : 'Create Class'}
-                </button>
-            </form>
 
-            <h3>Classes</h3>
             {classes.length > 0 ? (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Class Name</th>
-                            <th>Number of Students</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {classes.map((cls) => (
-                            <tr key={cls.id}>
-                                <td>{cls.name}</td>
-                                <td>{cls.studentsOfClass.length}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+
+                <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
+                    <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Classes Data</h2>
+                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead class="text-md text-gray-200 uppercase bg-gray-700">
+                                <tr className='text-center'>
+                                    <th scope="col" class="px-6 py-3 whitespace-nowrap">Class Name</th>
+                                    <th scope="col" class="px-6 py-3 whitespace-nowrap">Number Of students</th>
+                                </tr>
+                            </thead>
+                            <tbody className='bg-white'>
+                                {classes.map((cls) => (
+                                    <tr key={cls.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue  border-b'>
+                                        <th scope="row" class="px-6 py-4 font-bold ">{cls.name}</th>
+                                        <td className="px-6 py-4">{cls.studentsOfClass.length}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button className='ml-auto mr-[8px] mt-[20px] bg-custom-blue rounded-lg text-white text-lg py-[5px] px-[10px]' onClick={() => { setOpenForm(!openForm) }}>
+                        {openForm ? 'Close Registration' : 'Register Class'}
+                    </button>
+                </div>
             ) : (
                 <p>No classes found.</p>
             )}
 
-            <AssignCourses departmentAbbreviation={departmentData ? departmentData.abbreviation : ''} />
+            {openForm && (
+                <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
+                    <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Create Class</h2>
+                    {classError && <p className="text-red-500 mb-2">{classError}</p>}
+                    {classSuccess && <p className="text-green-500 mb-2">{classSuccess}</p>}
+                    <form onSubmit={handleCreateClass}>
+                        <div className="mb-4">
+                            <label htmlFor="className" className="block text-sm font-medium text-gray-700">Class Name:</label>
+                            <input
+                                type="text"
+                                id="className"
+                                value={className}
+                                onChange={(e) => setClassName(e.target.value)}
+                                required
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={classLoading}
+                            className="w-full bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                        >
+                            {classLoading ? 'Creating...' : 'Create Class'}
+                        </button>
+                    </form>
+                </div>
+            )}
+
         </div>
     );
 };

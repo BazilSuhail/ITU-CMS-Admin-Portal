@@ -64,53 +64,89 @@ const InstructorProfile = () => {
     navigate(`/marking-details/${assignCourseId}`);
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
 
   return (
-    <div>
-      <h2>Instructor Profile</h2>
-      {userData ? (
-        <div>
-          <p><strong>Name:</strong> {userData.name}</p>
-          <p><strong>Email:</strong> {userData.email}</p>
-          <p><strong>Phone:</strong> {userData.phone}</p>
-          <p><strong>Date of Birth:</strong> {userData.dob}</p>
+    <div className='h-full w-full'>
 
-          <h3>Assigned Courses</h3>
-          {assignedCourses.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>Course Name</th>
-                  <th>Class Name</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {assignedCourses.map((course, index) => (
-                  <tr key={index}>
-                    <td>{course.courseName}</td>
-                    <td>{course.className}</td>
-                    <td>
-                      <button onClick={() => handleNavigateToCourse(course.assignCourseId)}>View Course</button>
-                      <button onClick={() => handleNavigateToMarkingCourse(course.assignCourseId)}>Marks of Students</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {loading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>Error: {error}</div>
+      ) : (
+        <div>
+          {userData ? (
+            <div>
+
+              <h2 className='text-custom-blue my-[12px] flex text-4xl text-center ml-[10px] font-bold p-[8px] rounded-2xl'>Hii, <p className='text-blue-700 px-[8px]'>{userData.name}</p> !!  </h2>
+              <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
+              <div className='grid grid-cols-1 xsx:grid-cols-3 gap-x-[6px] gap-y-[15px] p-[8px]'>
+                <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+                  <div className='ml-[5px] text-md'>Name:</div>
+                  <div className='text-3xl xsx:text-2xl '>{userData.name}</div>
+                </p>
+                <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+                  <div className='ml-[5px] text-md'>Registered Email:</div>
+                  <div className='text-3xl xsx:text-2xl '>{userData.email}</div>
+                </p>
+                <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+                  <div className='ml-[5px] text-md'>Conatact:</div>
+                  <div className='text-3xl xsx:text-2xl '>{userData.phone}</div>
+                </p>
+              </div>
+
+              <h2 className='shadow-custom-create w-[225px] ml-[14px] my-[12px] text-2xl text-custom-blue font-bold p-[8px] rounded-xl'>Courses Teaching:</h2>
+
+              {assignedCourses.length > 0 ? (
+                <>
+                  <div className='mx-auto w-[96vw] grid grid-cols-1 xsx:grid-cols-2 xl:grid-cols-3 p-[10px] my-[12px]'>
+                    {assignedCourses.map((course) => (
+                      <div key={course.assignCourseId} className='bg-custom-blue flex flex-col rounded-lg m-[5px] text-white p-[15px]' >
+                        <div className='bg-gray-500 mt-[15px] rounded-lg mx-auto w-[100%] h-[230px]'></div>
+                        <p className='text-2xl font-bold my-[8px] ml-[5px]'>{course.courseName}</p>
+                        <p className='text-md text-gray-400 font-bold'>{course.className}</p>
+
+                        <button onClick={() => handleNavigateToCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-red-600 p-[8px] rounded-xl'>
+                          Mark Attendance
+                        </button>
+                        <button onClick={() => handleNavigateToMarkingCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-green-700 p-[8px] rounded-xl'>
+                          Grade Students
+                        </button>
+
+                      </div>
+                    ))}
+
+                  </div>
+
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Course Name</th>
+                        <th>Class Name</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {assignedCourses.map((course, index) => (
+                        <tr key={index}>
+                          <td>{course.courseName}</td>
+                          <td>{course.className}</td>
+                          <td>
+                            <button onClick={() => handleNavigateToCourse(course.assignCourseId)}>View Course</button>
+                            <button onClick={() => handleNavigateToMarkingCourse(course.assignCourseId)}>Marks of Students</button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              ) : (
+                <p>No courses assigned.</p>
+              )}
+            </div>
           ) : (
-            <p>No courses assigned.</p>
+            <p>No user data available</p>
           )}
         </div>
-      ) : (
-        <p>No user data available</p>
       )}
     </div>
   );

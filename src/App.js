@@ -5,9 +5,8 @@ import RegisterDepartment from "./Components/AdminRegistration/RegisterDepartmen
 import RegisterInstructor from "./Components/AdminRegistration/RegisterInstructor";
 import RegisterCourse from "./Components/AdminRegistration/RegisterCourse";
 
-
-
 import DepartmentProfile from "./Components/Departments/DepartmentProfile";
+import AssignCourses from "./Components/Departments/AssignCourses";
 import StudentCreation from "./Components/Departments/StudentCreation";
 import DepartmentClasses from "./Components/Departments/DepartmentClasses";
 import ClassStudents from "./Components/Departments/ClassStudents";
@@ -19,6 +18,7 @@ import ApplicationsForWithdraw from "./Components/Departments/WithdrawCourses";
 import InstructorProfile from "./Components/Instructor/InstructorProfile";
 import CourseDetails from "./Components/Instructor/CourseDetails";
 import Marking from "./Components/Instructor/Marking";
+import AssignMarks from "./Components/Instructor/AssignMarks";
 
 //result
 
@@ -45,6 +45,7 @@ const App = () => {
         
         {/* -------------------------  */ }
         <Route path="/department-profile"  element={<DepartmentProfile />}  />
+        <Route path="/assign-courses"  element={<AssignCourses />}  />
         <Route path="/student-creation" element={<StudentCreation />} />
 
         <Route path="/checkthenrollment" element={<DepartmentClasses />} />
@@ -58,6 +59,7 @@ const App = () => {
         <Route path="/instructor-profile" element={<InstructorProfile />} />
         <Route path="/course-details/:assignCourseId" element={<CourseDetails />} />
         <Route path="/marking-details/:assignCourseId" element={<Marking />} /> 
+        <Route path="/assign-marks/:assignCourseId" element={<AssignMarks />} />
         <Route exact path="/" element={<SignIn />} />
  
         {/*Results*/}

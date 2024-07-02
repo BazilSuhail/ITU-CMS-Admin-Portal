@@ -12,6 +12,8 @@ const RegisterDepartment = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const [openForm, setOpenForm] = useState(false);
+
     // Function to fetch departments from Firestore
     const fetchDepartments = async () => {
         try {
@@ -105,125 +107,151 @@ const RegisterDepartment = () => {
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
 
     return (
-        <div>
-            <h2>Register Department</h2>
-            <form onSubmit={handleRegisterDepartment}>
+        <div className='h-full w-full'>
+            <h2 className='text-custom-blue my-[12px] border- text-2xl text-center font-bold p-[8px] rounded-2xl'>Registered Departments Details</h2>
+            <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
+            
+            {loading ? (
+                <div>Loading...</div>
+            ) : (
                 <div>
-                    <label htmlFor="departmentName">Department Name:</label>
-                    <input
-                        type="text"
-                        id="departmentName"
-                        name="name"
-                        value={department.name}
-                        onChange={(e) => setDepartment(prevState => ({ ...prevState, name: e.target.value }))}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="departmentAbbreviation">Abbreviation:</label>
-                    <input
-                        type="text"
-                        id="departmentAbbreviation"
-                        name="abbreviation"
-                        value={department.abbreviation}
-                        onChange={(e) => setDepartment(prevState => ({ ...prevState, abbreviation: e.target.value }))}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="departmentEmail">Department Email:</label>
-                    <input
-                        type="email"
-                        id="departmentEmail"
-                        name="email"
-                        value={department.email}
-                        onChange={(e) => setDepartment(prevState => ({ ...prevState, email: e.target.value }))}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="departmentPassword">Password:</label>
-                    <input
-                        type="password"
-                        id="departmentPassword"
-                        name="password"
-                        value={department.password}
-                        onChange={(e) => setDepartment(prevState => ({ ...prevState, password: e.target.value }))}
-                        required
-                    />
-                </div>
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Registering...' : 'Register Department'}
-                </button>
-            </form>
 
-            {/* Display departments in a table */}
-            {departments.length > 0 && (
-                <div>
-                    <h2>Registered Departments</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Abbreviation</th>
-                                <th>Email</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {departments.map(dep => (
-                                <tr key={dep.id}>
-                                    <td>{dep.editable ? (
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={dep.name}
-                                            onChange={(e) => handleChange(e, dep.id)}
-                                            required
-                                        />
-                                    ) : dep.name}</td>
-                                    <td>{dep.editable ? (
-                                        <input
-                                            type="text"
-                                            name="abbreviation"
-                                            value={dep.abbreviation}
-                                            onChange={(e) => handleChange(e, dep.id)}
-                                            required
-                                        />
-                                    ) : dep.abbreviation}</td>
-                                    <td>{dep.editable ? (
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={dep.email}
-                                            onChange={(e) => handleChange(e, dep.id)}
-                                            required
-                                        />
-                                    ) : dep.email}</td>
-                                    <td>
-                                        {dep.editable ? (
-                                            <>
-                                                <button onClick={() => handleUpdateDepartment(dep.id)}>Save</button>
-                                                <button onClick={() => handleEditToggle(dep.id)}>Cancel</button>
-                                            </>
-                                        ) : (
-                                            <button onClick={() => handleEditToggle(dep.id)}>Edit</button>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    {/* Display departments in a table */}
+                    {departments.length > 0 && (
+                        <div>
+
+                            <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
+                                <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Department's Data</h2>
+                                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                    <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                        <thead class="text-md text-gray-200 uppercase bg-gray-700">
+                                            <tr className='text-center'>
+                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Department Name</th>
+                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Depertment's Program</th>
+                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Email Of students</th>
+                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {departments.map(dep => (
+                                                <tr key={dep.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue text-lg font-medium'>
+                                                    <td className="px-6 py-4">{dep.editable ? (
+                                                        <input
+                                                            type="text"
+                                                            name="name"
+                                                            value={dep.name}
+                                                            onChange={(e) => handleChange(e, dep.id)}
+                                                            className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
+                                                            required
+                                                        />
+                                                    ) : dep.name}</td>
+                                                    <td className="px-6 py-4">{dep.editable ? (
+                                                        <input
+                                                            type="text"
+                                                            name="abbreviation"
+                                                            className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
+                                                            value={dep.abbreviation}
+                                                            onChange={(e) => handleChange(e, dep.id)}
+                                                            required
+                                                        />
+                                                    ) : dep.abbreviation}</td>
+                                                    <td className="px-6 py-4">{dep.editable ? (
+                                                        <input
+                                                            type="email"
+                                                            name="email"
+                                                            value={dep.email}
+                                                            className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
+                                                            onChange={(e) => handleChange(e, dep.id)}
+                                                            required
+                                                        />
+                                                    ) : dep.email}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {dep.editable ? (
+                                                            <>
+                                                                <button onClick={() => handleUpdateDepartment(dep.id)} className="whitespace-nowrap bg-green-900 mr-[15px] w-[75px] hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl">
+                                                                    Save
+                                                                </button>
+                                                                <button onClick={() => handleEditToggle(dep.id)} className="whitespace-nowrap bg-red-900 hover:bg-white  w-[75px] hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl">
+                                                                    Cancel
+                                                                </button>
+                                                            </>
+                                                        ) : (
+                                                            <button onClick={() => handleEditToggle(dep.id)} className="whitespace-nowrap bg-custom-blue hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[25px] font-semibold text-white rounded-xl">
+                                                                Edit
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                    
+                                <button className='ml-auto mr-[8px] mt-[20px] bg-custom-blue rounded-lg w-[205px] text-white text-xl py-[5px] px-[10px]' onClick={() => { setOpenForm(!openForm) }}>
+                                    {openForm ? 'Close Registration' : 'Register Department'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {openForm && (
+                        <div className='my-[8px] flex flex-col w-[95%] lg::w-[65%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
+                            <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Register Department</h2>
+                            <form onSubmit={handleRegisterDepartment}>
+                                <label className="block text-lg font-medium text-gray-700" htmlFor="departmentName">Department Name:</label>
+                                <input
+                                    type="text"
+                                    id="departmentName"
+                                    name="name"
+                                    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+
+                                    value={department.name}
+                                    onChange={(e) => setDepartment(prevState => ({ ...prevState, name: e.target.value }))}
+                                    required
+                                />
+                                <label className="block text-lg font-medium text-gray-700" htmlFor="departmentAbbreviation">Abbreviation:</label>
+                                <input
+                                    type="text"
+                                    id="departmentAbbreviation"
+                                    name="abbreviation"
+                                    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+                                    value={department.abbreviation}
+                                    onChange={(e) => setDepartment(prevState => ({ ...prevState, abbreviation: e.target.value }))}
+                                    required
+                                />
+                                <label className="block text-lg font-medium text-gray-700" htmlFor="departmentEmail">Department Email:</label>
+                                <input
+                                    type="email"
+                                    id="departmentEmail"
+                                    name="email"
+                                    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+                                    value={department.email}
+                                    onChange={(e) => setDepartment(prevState => ({ ...prevState, email: e.target.value }))}
+                                    required
+                                />
+                                <label className="block text-lg font-medium text-gray-700" htmlFor="departmentPassword">Password:</label>
+                                <input
+                                    type="password"
+                                    id="departmentPassword"
+                                    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+
+                                    name="password"
+                                    value={department.password}
+                                    onChange={(e) => setDepartment(prevState => ({ ...prevState, password: e.target.value }))}
+                                    required
+                                />
+                                <button type="submit" disabled={loading} className="w-full mt-[10px] bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-blue-900 focus:outline-none focus:bg-blue-900"
+                                >
+                                    {loading ? 'Registering...' : 'Register Department'}
+                                </button>
+                            </form>
+                        </div>
+                    )}
+                    {/* Display error message if there's an error */}
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
             )}
-
-            {/* Display error message if there's an error */}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
     );
 };

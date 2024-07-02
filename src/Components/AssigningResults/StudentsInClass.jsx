@@ -36,47 +36,57 @@ const StudentsInClass = () => {
         fetchStudents();
     }, [classId]);
 
-    const handleViewEnrollments = (studentId) => {
-        
+    const handleResultAssign = (studentId) => {
+
         naviagate(`/assign-results/${classId}/${studentId}`);
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
 
     return (
-        <div>
-            <h2>Students in Class</h2>
-            {students.length > 0 ? (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>DOB</th>
-                            <th>Email</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {students.map((student) => (
-                            <tr key={student.id}>
-                                <td>{student.name}</td>
-                                <td>{student.dob}</td>
-                                <td>{student.email}</td>
-                                <td>
-                                    <button onClick={() => handleViewEnrollments(student.id)}>Calculate Results</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+        <div className='h-full w-full'>
+            <h2 className='text-custom-blue my-[12px] border- text-2xl text-center font-bold p-[8px] rounded-2xl'>Students Applications</h2>
+            <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
+            {loading ? (
+                <div>Loading...</div>
+            ) : error ? (
+                <div>Error: {error}</div>
             ) : (
-                <p>No students found.</p>
+                        <>                            
+                    {students.length > 0 ? (
+                        <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
+                            <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Classes Data</h2>
+                            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <thead class="text-md text-gray-200 uppercase bg-gray-700">
+                                        <tr className='text-center'>
+                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Student Name</th>
+                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Email</th>
+                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">DOB</th>
+                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Compile Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {students.map((student) => (
+                                            <tr key={student.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue  border-b  font-semibold text-lg'>
+                                                <th scope='row' class="px-6 py-4 font-bold ">{student.name}</th>
+                                                <td className="px-6 py-4">{student.dob}</td>
+                                                <td className="px-6 py-4">{student.email}</td>
+                                                <td>
+                                                    <button onClick={() => handleResultAssign(student.id)} className="whitespace-nowrap bg-green-800 hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" >
+                                                        Compile Result
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    ) : (
+                        <p>No students found.</p>
+                    )}
+                </>
             )}
         </div>
     );

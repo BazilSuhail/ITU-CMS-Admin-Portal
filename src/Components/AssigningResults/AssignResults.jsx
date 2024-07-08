@@ -50,18 +50,18 @@ const AssignResults = () => {
                     {classes.length > 0 ? (
                         <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
                             <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Classes Data</h2>
-                            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                                <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    <thead class="text-md text-gray-200 uppercase bg-gray-700">
+                            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                <table className="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <thead className="text-md text-gray-200 uppercase bg-gray-700">
                                         <tr className='text-center'>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Class Name</th>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Actions</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Class Name</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {classes.map((cls) => (
                                             <tr key={cls.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue  border-b  font-semibold text-md'>
-                                                <th scope='row' class="px-6 py-4 font-bold ">{cls.name}</th>
+                                                <th scope='row' className="px-6 py-4 font-bold ">{cls.name}</th>
                                                 <td>
                                                     <button onClick={() => handleViewStudents(cls.id)}  className="whitespace-nowrap bg-custom-blue hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" >View Students</button>
                                                 </td>

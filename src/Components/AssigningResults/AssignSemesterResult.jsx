@@ -153,30 +153,30 @@ const AssignSemesterResult = () => {
         <div>
 
           <div className='grid grid-cols-1 xsx:grid-cols-3 gap-x-[6px] gap-y-[15px] p-[8px]'>
-            <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+            <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
               <div className='ml-[5px] text-md'>Student's Email:</div>
               <div className='text-3xl xsx:text-2xl '>{studentdata.email}</div>
-            </p>
-            <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+            </div>
+            <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
               <div className='ml-[5px] text-md'>Student's Roll-Number:</div>
               <div className='text-3xl xsx:text-2xl '>{studentdata.rollNumber}</div>
-            </p>
-            <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+            </div>
+            <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
               <div className='ml-[5px] text-md'>Student's Current Semster:</div>
               <div className='text-3xl xsx:text-2xl '>{studentdata.semester}</div>
-            </p>
-            <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+            </div>
+            <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
               <div className='ml-[5px] text-md'>Student's Completed Courses:</div>
               <div className='text-3xl xsx:text-2xl '>{studentdata.completedCourses.length}</div>
-            </p>
-            <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+            </div>
+            <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
               <div className='ml-[5px] text-md'>Student's Current Enrolled Courses:</div>
               <div className='text-3xl xsx:text-2xl '>{studentdata.currentCourses.length}</div>
-            </p>
-            <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+            </div>
+            <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
               <div className='ml-[5px] text-md'>Student's Status:</div>
               <div className='text-3xl xsx:text-2xl '>{studentdata.status}</div>
-            </p>
+            </div>
           </div>
 
           {currentCourses.length > 0 ? (
@@ -197,7 +197,14 @@ const AssignSemesterResult = () => {
                         {/*<td>{course.courseId}</td>*/}
                         <th scope='row' className="px-6 py-4 font-bold whitespace-nowrap">{course.courseName}</th>
                         <td className="px-6 py-4 whitespace-nowrap">{course.creditHours}</td>
-                        <td className="px-6 py-4 whitespace-nowrap"><p className='p-[4px] text-lg bg-custom-blue text-white mx-auto font-bold rounded-lg my-[5px] w-[50%]'>{course.grade}</p></td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {course.grade === "No grade assigned"
+                            ? (<p className='text-sm text-red-300 bg-red-900 px-[3px] py-[5px] rounded-md'>No Grade Assigned</p>)
+                            :
+                            (
+                              <p className='p-[4px] text-lg bg-custom-blue text-white mx-auto font-bold rounded-lg my-[5px] w-[50%]'>{course.grade}</p>)
+                          }
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -207,7 +214,6 @@ const AssignSemesterResult = () => {
           ) : (
             <p></p>
           )}
-
 
           {currentCourses.length > 0 ? (
             <>
@@ -256,7 +262,7 @@ const AssignSemesterResult = () => {
                   <p className='text-xl text-white rounded-lg bg-red-800 my-[8px] whitespace-nowrap mx-[15px] lg:mx-[80px] overflow-x-auto uppercase p-[5px] text-center font-bold '>All courses Have to be Assigned a GRADE to enable GPA calculation</p>
                 )
               }
-            </> )   :
+            </>) :
             (
               <p className='text-xl text-white rounded-lg bg-red-800 my-[8px] whitespace-nowrap mx-[15px] lg:mx-[80px] overflow-x-auto uppercase p-[5px] text-center font-bold '>No Enrolled Courses Were found</p>
             )}

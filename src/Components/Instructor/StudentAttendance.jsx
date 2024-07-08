@@ -19,7 +19,7 @@ const StudentAttendance = ({ student, attendance, onAttendanceChange }) => {
 
   return (
     <tr className='text-center odd:bg-white even:bg-gray-200 text-custom-blue text-md'>
-      <th scope='row' class="px-6 py-4 text-lg font-bold ">{student.name}</th>
+      <th scope='row' className="px-6 py-4 text-lg font-bold ">{student.name}</th>
       <td className="px-6 py-4">
         <div>
           <select

@@ -55,20 +55,20 @@ const StudentsInClass = () => {
                     {students.length > 0 ? (
                         <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
                             <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Classes Data</h2>
-                            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                                <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    <thead class="text-md text-gray-200 uppercase bg-gray-700">
+                            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                <table className="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <thead className="text-md text-gray-200 uppercase bg-gray-700">
                                         <tr className='text-center'>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Student Name</th>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Email</th>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">DOB</th>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Compile Result</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Student Name</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Email</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">DOB</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Compile Result</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {students.map((student) => (
                                             <tr key={student.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue  border-b  font-semibold text-lg'>
-                                                <th scope='row' class="px-6 py-4 font-bold ">{student.name}</th>
+                                                <th scope='row' className="px-6 py-4 font-bold ">{student.name}</th>
                                                 <td className="px-6 py-4">{student.dob}</td>
                                                 <td className="px-6 py-4">{student.email}</td>
                                                 <td>

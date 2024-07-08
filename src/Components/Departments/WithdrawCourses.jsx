@@ -154,23 +154,23 @@ const ApplicationsForWithdraw = () => {
                     {withdrawRequests.length > 0 ? (
                         <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
                             <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Classes Data</h2>
-                            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                                <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                    <thead class="text-md text-gray-200 uppercase bg-gray-700">
+                            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                <table className="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <thead className="text-md text-gray-200 uppercase bg-gray-700">
                                         <tr className='text-center'>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Course Name</th>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Instructor</th>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Class ID</th>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">WithDraw</th>
-                                            <th scope="col" class="px-6 py-3 whitespace-nowrap">Remove Application</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Course Name</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Instructor</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Class ID</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">WithDraw</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Remove Application</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {withdrawRequests.map((course) => (
                                             <tr key={course.assignCourseId} className='text-center odd:bg-white even:bg-gray-300 text-custom-blue  border-b  font-semibold text-lg'>
-                                                <th scope='row' class="px-6 py-4 font-bold ">{course.courseName}</th>
-                                                <td class="px-6 py-4  ">{course.instructorName}</td>
-                                                <td class="px-6 py-4  ">{course.className}</td>
+                                                <th scope='row' className="px-6 py-4 font-bold ">{course.courseName}</th>
+                                                <td className="px-6 py-4  ">{course.instructorName}</td>
+                                                <td className="px-6 py-4  ">{course.className}</td>
 
                                                 <td>
                                                     {processing[course.assignCourseId] ? (

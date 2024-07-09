@@ -1,5 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { fs } from '../../Config/Config';
+import { Circles } from 'react-loader-spinner';
+
+/*
+
+import { Circles } from 'react-loader-spinner';
+
+
+            {loading ? (
+                <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
+                    <Circles
+                        height="60"
+                        width="60"
+                        color="rgb(0, 63, 146)"
+                        ariaLabel="circles-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                    />
+                </div>
+
+*/
+
+
 
 const RegisterCourse = () => {
     const [formData, setFormData] = useState({
@@ -170,7 +193,20 @@ const RegisterCourse = () => {
             <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
-            {loading && <p>Loading courses...</p>}
+            {loading &&
+                <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
+                <Circles
+                    height="60"
+                    width="60"
+                    color="rgb(0, 63, 146)"
+                    ariaLabel="circles-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                />
+            </div>
+            } 
+
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {!loading && !error && (
                 <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
@@ -203,7 +239,7 @@ const RegisterCourse = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             {course.preRequisites && course.preRequisites.length > 0
-                                                ?  <button onClick={() => handleEditCourse(course)}  className=" w-[205px] text-center bg-blue-950 hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] font-semibold text-white rounded-md">Check Pre-Requisites</button>
+                                                ? <button onClick={() => handleEditCourse(course)} className=" w-[205px] text-center bg-blue-950 hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] font-semibold text-white rounded-md">Check Pre-Requisites</button>
                                                 : <p className='bg-green-800 text-white rounded-xl p-[8px] w-[195px] mx-auto'>None</p>}
                                         </td>
                                     </tr>

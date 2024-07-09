@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, fs } from '../../Config/Config';
 
+import { Circles } from 'react-loader-spinner';
 const AssignCourses = () => {
     const [courses, setCourses] = useState([]);
     const [instructors, setInstructors] = useState([]);
@@ -111,7 +112,17 @@ const AssignCourses = () => {
             <h2 className='text-custom-blue my-[12px] border- text-2xl text-center font-bold p-[8px] rounded-2xl'>Course Details</h2>
             <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
             {loading ? (
-                <div>Loading...</div>
+                <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
+                    <Circles
+                        height="60"
+                        width="60"
+                        color="rgb(0, 63, 146)"
+                        ariaLabel="circles-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                    />
+                </div>
             ) : (
                 <>
                     {assignError && <p style={{ color: 'red' }}>{assignError}</p>}

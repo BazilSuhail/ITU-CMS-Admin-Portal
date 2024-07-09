@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Circles } from 'react-loader-spinner';
 import { useParams } from 'react-router-dom';
 import { fs } from '../../Config/Config';
 
@@ -177,9 +178,20 @@ const Marking = () => {
     return (
         <div>
             {loading ? (
-                <p>Loading...</p>
+                <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
+                    <Circles
+                        height="60"
+                        width="60"
+                        color="rgb(0, 63, 146)"
+                        ariaLabel="circles-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                    />
+                </div>
+
             ) : error ? (
-                <p>Error: {error}</p>
+                <p>Error: {saveMessage}+ {error}</p>
             ) : (
 
                 <div>
@@ -379,7 +391,7 @@ const Marking = () => {
                                                             }
                                                         >
                                                             {grades.map((grade) => (
-                                                                <option  className='bg-gray-200 text-custom-blue font-bold text-md' key={grade} value={grade}>{grade}</option>
+                                                                <option className='bg-gray-200 text-custom-blue font-bold text-md' key={grade} value={grade}>{grade}</option>
                                                             ))}
                                                         </select>
                                                     </td>
@@ -437,10 +449,10 @@ const Marking = () => {
                                                 />
                                             </div>
                                         ))}
-                                                <button onClick={handleSaveAddMarks}
-                                                className=' w-[155px] my-[10px] ml-[15px] py-[8px] justify-center rounded-md bg-blue-950 text-lg font-bold hover:text-custom-blue hover:bg-white text-white'>
-                                                    Add Results
-                                                </button>
+                                        <button onClick={handleSaveAddMarks}
+                                            className=' w-[155px] my-[10px] ml-[15px] py-[8px] justify-center rounded-md bg-blue-950 text-lg font-bold hover:text-custom-blue hover:bg-white text-white'>
+                                            Add Results
+                                        </button>
                                     </div>
                                 )}
                             </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fs, FieldValue } from '../../Config/Config';
 import { useParams } from 'react-router-dom';
+import { Circles } from 'react-loader-spinner';
 
 const VerifyEnrollment = () => {
     const { studentId } = useParams();
@@ -109,8 +110,19 @@ const VerifyEnrollment = () => {
                 {student ? `${student.name}'s Information` : 'Loading...'}
             </h2>
             <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
+           
             {loading ? (
-                <div>Loading...</div>
+                <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
+                    <Circles
+                        height="60"
+                        width="60"
+                        color="rgb(0, 63, 146)"
+                        ariaLabel="circles-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                    />
+                </div>
             ) : error ? (
                 <div>Error: {error}</div>
             ) : (

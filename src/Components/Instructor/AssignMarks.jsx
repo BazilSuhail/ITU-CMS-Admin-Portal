@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fs } from '../../Config/Config';
+import { Circles } from 'react-loader-spinner';
 
 const AssignMarks = () => {
     const { assignCourseId } = useParams();
@@ -60,7 +61,17 @@ const AssignMarks = () => {
     }, [assignCourseId]);
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
+            <Circles
+                height="60"
+                width="60"
+                color="rgb(0, 63, 146)"
+                ariaLabel="circles-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+            />
+        </div>;
     }
 
     if (error) {

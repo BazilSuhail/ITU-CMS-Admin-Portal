@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, fs } from '../../Config/Config';
+import { Circles } from 'react-loader-spinner';
+
 import { useNavigate } from 'react-router-dom';
 
 const InstructorProfile = () => {
@@ -69,7 +71,17 @@ const InstructorProfile = () => {
     <div className='h-full w-full'>
 
       {loading ? (
-        <div>Loading...</div>
+        <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
+          <Circles
+            height="60"
+            width="60"
+            color="rgb(0, 63, 146)"
+            ariaLabel="circles-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        </div>
       ) : error ? (
         <div>Error: {error}</div>
       ) : (

@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { fs } from '../../Config/Config';
 import StudentAttendance from './StudentAttendance';
 import EditAttendance from './EditAttendance';
+import { Circles } from 'react-loader-spinner';
+
 
 const CourseDetails = () => {
   const { assignCourseId } = useParams();
@@ -135,7 +137,17 @@ const CourseDetails = () => {
   return (
     <div>
       {loading ? (
-        <p>Loading...</p>
+        <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
+          <Circles
+            height="60"
+            width="60"
+            color="rgb(0, 63, 146)"
+            ariaLabel="circles-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        </div>
       ) : error ? (
         <p>Error: {error}</p>
       ) : (
@@ -194,8 +206,8 @@ const CourseDetails = () => {
 
           <button onClick={() => seteditForm(!editForm)}
             className='shadow-custom my-[55px]-light py-[8px] w-[385px] lg:w-[55vw] mx-auto rounded-xl bg-green-900 text-2xl font-bold hover:text-green-900 hover:bg-white hover:shadow-custom-light text-white'
-              >
-                {editForm ? 'Close Review' : 'Show Attendance Records' }
+          >
+            {editForm ? 'Close Review' : 'Show Attendance Records'}
           </button>
           {
             editForm && (

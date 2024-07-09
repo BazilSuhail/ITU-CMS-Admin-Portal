@@ -157,7 +157,7 @@ const VerifyEnrollment = () => {
                                                                 className={`whitespace-nowrap text-md py-[8px] px-[12px] font-semibold rounded-xl 
                                                                     ${!checkPrerequisites(courseDetails[courseId]?.preRequisites)
                                                                         ? 'bg-gray-400 text-white cursor-not-allowed'
-                                                                        : 'bg-custom-blue text-white hover:bg-white hover:border-2 hover:text-custom-blue'
+                                                                        : 'bg-custom-blue text-white hover:bg-white  border-2 hover:text-custom-blue'
                                                                     }`}
                                                                 disabled={!checkPrerequisites(courseDetails[courseId]?.preRequisites)}  >
                                                                 Approve
@@ -165,11 +165,11 @@ const VerifyEnrollment = () => {
                                                         </td>
                                                         <td className="px-6 py-4 font-bold ">
                                                             <button onClick={() => handleDisapprove(courseId)} disabled={checkPrerequisites(courseDetails[courseId]?.preRequisites)}
-                                                            className={`whitespace-nowrap text-md py-[8px] px-[12px] font-semibold rounded-xl 
+                                                                className={`whitespace-nowrap text-md py-[8px] px-[12px] font-semibold rounded-xl 
                                                                 ${checkPrerequisites(courseDetails[courseId]?.preRequisites)
-                                                                    ? 'bg-gray-400 text-white cursor-not-allowed'
-                                                                    : 'bg-custom-blue text-white hover:bg-white hover:shadow-custom-light hover:text-custom-blue'
-                                                                }`}
+                                                                        ? 'bg-gray-400 text-white cursor-not-allowed'
+                                                                        : 'bg-custom-blue text-white hover:bg-white hover:shadow-custom-light hover:text-custom-blue'
+                                                                    }`}
                                                             >
                                                                 Disapprove
                                                             </button>

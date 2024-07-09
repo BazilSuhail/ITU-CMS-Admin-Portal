@@ -115,98 +115,92 @@ const RegisterInstructor = () => {
         <div className='h-full w-full'>
             <h2 className='text-custom-blue my-[12px] border- text-2xl text-center font-bold p-[8px] rounded-2xl'>Registered Instructors</h2>
             <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
-            
-            <button className='ml-auto mr-[8px] mt-[20px] bg-custom-blue rounded-lg w-[205px] text-white text-xl py-[5px] px-[10px]' onClick={() => { setOpenForm(!openForm) }}>
-                                    {openForm ? 'Close Registration' : 'Register Instructor'}
-                                </button>
+
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                <div>
-                    <h2>Register Instructor</h2>
-
-                    {/* Display instructors in a table */}
+                <div className='flex flex-col '>
                     {instructors.length > 0 && (
-                        <div>
-                            <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
-                                <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Instructors Data</h2>
-                                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                                    <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                        <thead class="text-md text-gray-200 uppercase bg-gray-700">
-                                            <tr className='text-center'>
-                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Instructor Name</th>
-                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Instructor Email </th>
-                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Instructor's Contact</th>
-                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Joined Since</th>
-                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Actions</th>
+                        <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
+                            <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Instructors Data</h2>
+                            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                <table className="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <thead className="text-md text-gray-200 uppercase bg-gray-700">
+                                        <tr className='text-center'>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Instructor Name</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Instructor Email </th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Instructor's Contact</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Joined Since</th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {instructors.map(inst => (
+                                            <tr key={inst.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue text-lg font-medium'>
+                                                <td className="px-6 py-4">{inst.editable ? (
+                                                    <input
+                                                        type="text"
+                                                        name="name"
+                                                        value={inst.name}
+                                                        className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
+                                                        onChange={(e) => handleChange(e, inst.id)}
+                                                        required
+                                                    />
+                                                ) : inst.name}</td>
+                                                <td className="px-6 py-4">{inst.editable ? (
+                                                    <input
+                                                        type="email"
+                                                        name="email"
+                                                        value={inst.email}
+                                                        className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
+                                                        onChange={(e) => handleChange(e, inst.id)}
+                                                        required
+                                                    />
+                                                ) : inst.email}</td>
+                                                <td className="px-6 py-4">{inst.editable ? (
+                                                    <input
+                                                        type="text"
+                                                        name="phone"
+                                                        className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
+                                                        value={inst.phone}
+                                                        onChange={(e) => handleChange(e, inst.id)}
+                                                        required
+                                                    />
+                                                ) : inst.phone}</td>
+                                                <td className="px-6 py-4">{inst.editable ? (
+                                                    <input
+                                                        type="date"
+                                                        name="dob"
+                                                        value={inst.dob}
+                                                        className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
+                                                        onChange={(e) => handleChange(e, inst.id)}
+                                                        required
+                                                    />
+                                                ) : inst.dob}</td>
+                                                <td className="px-6 py-4">
+                                                    {inst.editable ? (
+                                                        <>
+                                                            <button className="whitespace-nowrap bg-green-900 mr-[15px] w-[75px] hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" onClick={() => handleUpdateInstructor(inst.id)}>Save</button>
+                                                            <button onClick={() => handleEditToggle(inst.id)} className="whitespace-nowrap bg-red-900 hover:bg-white  w-[75px] hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl">Cancel</button>
+                                                        </>
+                                                    ) : (
+                                                        <button onClick={() => handleEditToggle(inst.id)} className="whitespace-nowrap bg-custom-blue hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[25px] font-semibold text-white rounded-xl">
+                                                            Edit
+                                                        </button>
+                                                    )}
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            {instructors.map(inst => (
-                                                <tr key={inst.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue text-lg font-medium'>
-                                                    <td className="px-6 py-4">{inst.editable ? (
-                                                        <input
-                                                            type="text"
-                                                            name="name"
-                                                            value={inst.name}
-                                                            className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
-                                                            onChange={(e) => handleChange(e, inst.id)}
-                                                            required
-                                                        />
-                                                    ) : inst.name}</td>
-                                                    <td className="px-6 py-4">{inst.editable ? (
-                                                        <input
-                                                            type="email"
-                                                            name="email"
-                                                            value={inst.email}
-                                                            className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
-                                                            onChange={(e) => handleChange(e, inst.id)}
-                                                            required
-                                                        />
-                                                    ) : inst.email}</td>
-                                                    <td className="px-6 py-4">{inst.editable ? (
-                                                        <input
-                                                            type="text"
-                                                            name="phone"
-                                                            className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
-                                                            value={inst.phone}
-                                                            onChange={(e) => handleChange(e, inst.id)}
-                                                            required
-                                                        />
-                                                    ) : inst.phone}</td>
-                                                    <td className="px-6 py-4">{inst.editable ? (
-                                                        <input
-                                                            type="date"
-                                                            name="dob"
-                                                            value={inst.dob}
-                                                            className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
-                                                            onChange={(e) => handleChange(e, inst.id)}
-                                                            required
-                                                        />
-                                                    ) : inst.dob}</td>
-                                                    <td className="px-6 py-4">
-                                                        {inst.editable ? (
-                                                            <>
-                                                                <button className="whitespace-nowrap bg-green-900 mr-[15px] w-[75px] hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" onClick={() => handleUpdateInstructor(inst.id)}>Save</button>
-                                                                <button onClick={() => handleEditToggle(inst.id)} className="whitespace-nowrap bg-red-900 hover:bg-white  w-[75px] hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl">Cancel</button>
-                                                            </>
-                                                        ) : (
-                                                            <button onClick={() => handleEditToggle(inst.id)} className="whitespace-nowrap bg-custom-blue hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[25px] font-semibold text-white rounded-xl">
-                                                                Edit
-                                                            </button>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <button className='ml-auto mr-[8px] mt-[20px] bg-custom-blue rounded-lg w-[205px] text-white text-xl py-[5px] px-[10px]' onClick={() => { setOpenForm(!openForm) }}>
-                                    {openForm ? 'Close Registration' : 'Register Instructor'}
-                                </button>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
+
+                        </div> 
                     )}
+
+                    <button className='ml-auto mr-[20px] mt-[20px] bg-custom-blue rounded-lg text-white text-lg py-[5px] px-[10px]' onClick={() => { setOpenForm(!openForm) }}>
+                        {openForm ? 'Close Registration' : 'Register Instructor'}
+                    </button>
 
                     {openForm && (
                         <div className='my-[8px] flex flex-col w-[95%] lg::w-[65%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>

@@ -164,12 +164,12 @@ const CourseDetails = () => {
                 onChange={(e) => setSelectedDate(e.target.value)}
                 required
               />
-              <div class="relative mt-[15px] overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead class="text-md text-gray-200 uppercase bg-gray-700">
+              <div className="relative mt-[15px] overflow-x-auto shadow-md sm:rounded-lg">
+                <table className="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead className="text-md text-gray-200 uppercase bg-gray-700">
                     <tr className='text-center'>
-                      <th scope="col" class="px-6 py-3 whitespace-nowrap">Student's Name</th>
-                      <th scope="col" class="px-6 py-3 whitespace-nowrap">Attendance Status</th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">Student's Name</th>
+                      <th scope="col" className="px-6 py-3 whitespace-nowrap">Attendance Status</th>
                     </tr>
                   </thead>
                   <tbody>

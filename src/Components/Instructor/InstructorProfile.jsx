@@ -97,48 +97,24 @@ const InstructorProfile = () => {
               <h2 className='shadow-custom-create w-[225px] ml-[14px] my-[12px] text-2xl text-custom-blue font-bold p-[8px] rounded-xl'>Courses Teaching:</h2>
 
               {assignedCourses.length > 0 ? (
-                <>
-                  <div className='mx-auto w-[96vw] grid grid-cols-1 xsx:grid-cols-2 xl:grid-cols-3 p-[10px] my-[12px]'>
-                    {assignedCourses.map((course) => (
-                      <div key={course.assignCourseId} className='bg-custom-blue flex flex-col rounded-lg m-[5px] text-white p-[15px]' >
-                        <div className='bg-gray-500 mt-[15px] rounded-lg mx-auto w-[100%] h-[230px]'></div>
-                        <p className='text-2xl font-bold my-[8px] ml-[5px]'>{course.courseName}</p>
-                        <p className='text-md text-gray-400 font-bold'>{course.className}</p>
+                <div className='mx-auto w-[96vw] grid grid-cols-1 xsx:grid-cols-2 xl:grid-cols-3 p-[10px] my-[12px]'>
+                  {assignedCourses.map((course) => (
+                    <div key={course.assignCourseId} className='bg-custom-blue flex flex-col rounded-lg m-[5px] text-white p-[15px]' >
+                      <div className='bg-gray-500 mt-[15px] rounded-lg mx-auto w-[100%] h-[230px]'></div>
+                      <p className='text-2xl font-bold my-[8px] ml-[5px]'>{course.courseName}</p>
+                      <p className='text-md text-gray-400 font-bold'>{course.className}</p>
 
-                        <button onClick={() => handleNavigateToCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-red-600 p-[8px] rounded-xl'>
-                          Mark Attendance
-                        </button>
-                        <button onClick={() => handleNavigateToMarkingCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-green-700 p-[8px] rounded-xl'>
-                          Grade Students
-                        </button>
+                      <button onClick={() => handleNavigateToCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-red-600 p-[8px] rounded-xl'>
+                        Mark Attendance
+                      </button>
+                      <button onClick={() => handleNavigateToMarkingCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-green-700 p-[8px] rounded-xl'>
+                        Grade Students
+                      </button>
 
-                      </div>
-                    ))}
+                    </div>
+                  ))}
 
-                  </div>
-
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Course Name</th>
-                        <th>Class Name</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {assignedCourses.map((course, index) => (
-                        <tr key={index}>
-                          <td>{course.courseName}</td>
-                          <td>{course.className}</td>
-                          <td>
-                            <button onClick={() => handleNavigateToCourse(course.assignCourseId)}>View Course</button>
-                            <button onClick={() => handleNavigateToMarkingCourse(course.assignCourseId)}>Marks of Students</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </>
+                </div>
               ) : (
                 <p>No courses assigned.</p>
               )}

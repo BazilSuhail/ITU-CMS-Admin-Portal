@@ -113,8 +113,9 @@ const ManageSchedule = () => {
     };
 
     return (
-        <div className="h-full w-full p-5">
-            <h2 className='text-custom-blue text-2xl font-bold mb-4'>Manage Schedule</h2>
+        <div className="h-full w-full p-5"> 
+            <h2 className='text-custom-blue my-[12px] border- text-2xl text-center font-bold p-[8px] rounded-2xl'>Manage Schedule</h2>
+            <div className='w-[95%] xl:w-[90%] mb-[35px] mx-auto h-[2px] bg-custom-blue'></div>
 
             {loading ? (
                 <div className='w-full h-[calc(100vh-200px)] flex justify-center items-center'>

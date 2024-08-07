@@ -41,7 +41,10 @@ const StudentsInClass = () => {
 
         naviagate(`/assign-results/${classId}/${studentId}`);
     };
+    const handleEditProfile = (studentId) => {
 
+        naviagate(`/edit-profile/${classId}/${studentId}`);
+    };
 
     return (
         <div className='h-full w-full'>
@@ -86,6 +89,9 @@ const StudentsInClass = () => {
                                                 <td>
                                                     <button onClick={() => handleResultAssign(student.id)} className="whitespace-nowrap bg-green-800 hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" >
                                                         Compile Result
+                                                    </button>
+                                                    <button onClick={() => handleEditProfile(student.id)} className="whitespace-nowrap bg-blue-800 hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" >
+                                                        Edit Bio
                                                     </button>
                                                 </td>
 

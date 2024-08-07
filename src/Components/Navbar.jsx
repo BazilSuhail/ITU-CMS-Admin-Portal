@@ -61,9 +61,9 @@ const Navbar = () => {
             <div className="xsx:flex hidden text-md items-center text-white">
               <NavLink to="/department-profile" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Dashboard</NavLink>
               <NavLink to="/assign-courses" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Course Details</NavLink>
-              <NavLink to="/student-creation" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Register Student</NavLink>
-              <NavLink to="/checkthenrollment" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Enrollments/Withdrawls</NavLink>
+              <NavLink to="/checkthenrollment" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Enrollment</NavLink>
               <NavLink to="/assignResults" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium hover:bg-white hover:rounded-lg hover:text-custom-blue p-[2px] lg:p-[5px] ">Result Compilation</NavLink>
+              <NavLink to="/student-creation" className="text-md lg:text-lg mx-[4px] lg:mx-[8px] font-medium border-blue-800 bg-blue-800 border-2 rounded-lg hover:bg-custom-blue hover:border-white text-white p-[2px] lg:p-[5px] ">Registerations</NavLink>
             </div>
 
             <button className="text-lg bg-red-600 text-white rounded-md  w-[100px] h-[36px] my-auto mr-[10px] xsx:flex hidden items-center" onClick={handleLogout}> <IoMdLogOut className="mt-[2px] mx-[5px] text-2xl" /><p>Logout</p></button>

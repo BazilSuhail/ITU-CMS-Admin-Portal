@@ -68,7 +68,7 @@ const InstructorProfile = () => {
 
 
   return (
-    <div className='h-full w-full'>
+    <main className='h-full w-full'>
 
       {loading ? (
         <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
@@ -92,18 +92,18 @@ const InstructorProfile = () => {
               <h2 className='text-custom-blue my-[12px] flex text-4xl text-center ml-[10px] font-bold p-[8px] rounded-2xl'>Hii, <p className='text-blue-700 px-[8px]'>{userData.name}</p> !!  </h2>
               <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
               <div className='grid grid-cols-1 xsx:grid-cols-3 gap-x-[6px] gap-y-[15px] p-[8px]'>
-                <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+                <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
                   <div className='ml-[5px] text-md'>Name:</div>
                   <div className='text-3xl xsx:text-2xl '>{userData.name}</div>
-                </p>
-                <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+                </div>
+                <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
                   <div className='ml-[5px] text-md'>Registered Email:</div>
                   <div className='text-3xl xsx:text-2xl '>{userData.email}</div>
-                </p>
-                <p className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
+                </div>
+                <div className='bg-custom-blue rounded-2xl mx-auto text-white p-[15px] w-full xsx:w-[90%] transform hover:scale-110 transition-transform duration-300'>
                   <div className='ml-[5px] text-md'>Conatact:</div>
                   <div className='text-3xl xsx:text-2xl '>{userData.phone}</div>
-                </p>
+                </div>
               </div>
 
               <h2 className='shadow-custom-create w-[225px] ml-[14px] my-[12px] text-2xl text-custom-blue font-bold p-[8px] rounded-xl'>Courses Teaching:</h2>
@@ -136,7 +136,7 @@ const InstructorProfile = () => {
           )}
         </div>
       )}
-    </div>
+    </main>
   );
 };
 

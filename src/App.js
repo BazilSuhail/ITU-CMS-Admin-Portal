@@ -28,8 +28,6 @@ import AssignResults from "./Components/AssigningResults/AssignResults";
 import StudentsInClass from "./Components/AssigningResults/StudentsInClass";
 import AssignSemesterResult from "./Components/AssigningResults/AssignSemesterResult";
 
-
-
 import Navbar from "./Components/Navbar";
 import SignIn from "./Components/SignIn";
 

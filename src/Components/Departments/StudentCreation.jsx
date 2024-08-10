@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth,st, fs, FieldValue } from '../../Config/Config';
+import { auth, st, fs, FieldValue } from '../../Config/Config';
 
 const StudentCreation = () => {
 
@@ -46,7 +46,7 @@ const StudentCreation = () => {
                     const classesSnapshot = await fs.collection('classes').get();
                     const classesList = classesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     setClasses(classesList);
-    
+
                     // Fetch department of current user
                     const departmentDoc = await fs.collection('departments').doc(user.uid).get();
                     if (departmentDoc.exists) {
@@ -66,14 +66,14 @@ const StudentCreation = () => {
                 setStudentError(err.message);
             }
         };
-    
+
         fetchClasses();
     }, []);
-    
+
     const handleFileChange = (e) => {
         setProfilePicture(e.target.files[0]);
     };
-    
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -88,21 +88,21 @@ const StudentCreation = () => {
         setStudentLoading(true);
         setStudentError(null);
         setStudentSuccess(null);
-    
+
         try {
             // Register the new student
             const userCredential = await auth.createUserWithEmailAndPassword(student.email, student.password);
             const user = userCredential.user;
-    
+
             let profileUrl = '';
-    
+
             if (profilePicture) {
                 // Upload profile picture
                 const storageRef = st.ref(`profilePictures/${user.uid}`);
                 await storageRef.put(profilePicture);
                 profileUrl = await storageRef.getDownloadURL();
             }
-    
+
             // Store student data in Firestore
             await fs.collection('students').doc(user.uid).set({
                 ...student,
@@ -110,15 +110,15 @@ const StudentCreation = () => {
                 profileUrl, // Add this line
                 createdAt: new Date()
             });
-    
+
             // Update the corresponding class document
             await fs.collection('classes').doc(student.classId).update({
                 studentsOfClass: FieldValue.arrayUnion(user.uid)
             });
-    
+
             // Sign in the user again with department email and passCode
             await auth.signInWithEmailAndPassword(department.email, department.passCode);
-    
+
             setStudent({
                 name: '',
                 email: '',
@@ -152,7 +152,7 @@ const StudentCreation = () => {
             setStudentLoading(false);
         }
     };
-    
+
 
     return (
         <div className='h-full w-full'>
@@ -243,14 +243,14 @@ const StudentCreation = () => {
                          placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
                             type="text" id="studentNationality" name="nationality" value={student.nationality} onChange={handleChange} required />
 
-<label className="block text-lg font-medium text-gray-700" htmlFor="studentProfilePicture">Profile Picture:</label>
-<input 
-    type="file"
-    id="studentProfilePicture"
-    name="profilePicture"
-    onChange={handleFileChange}
-    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-/>
+                        <label className="block text-lg font-medium text-gray-700" htmlFor="studentProfilePicture">Profile Picture:</label>
+                        <input
+                            type="file"
+                            id="studentProfilePicture"
+                            name="profilePicture"
+                            onChange={handleFileChange}
+                            className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+                        />
 
                         <label className="block text-lg  font-medium text-gray-700" htmlFor="studentCurrentAddress">Current Address:</label>
                         <input className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue
@@ -276,7 +276,7 @@ const StudentCreation = () => {
 
                         <label className="block text-lg  font-medium text-gray-700" htmlFor="studentDegreeProgram">Department:</label>
                         <input type="text" id="studentDegreeProgram" name="degreeProgram" value={`BS-${department ? department.name : 'Department'}`} readOnly
-                            className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"  />
+                            className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md" />
 
                         <input
                             type="hidden"

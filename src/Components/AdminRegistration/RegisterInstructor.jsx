@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { auth, fs } from '../../Config/Config';
+import { auth, fs, st } from '../../Config/Config';
 import { Circles } from 'react-loader-spinner';
 
 const RegisterInstructor = () => {
-    const [instructorName, setInstructorName] = useState('');
-    const [instructorEmail, setInstructorEmail] = useState('');
-    const [instructorPassword, setInstructorPassword] = useState('');
-    const [instructorPhone, setInstructorPhone] = useState('');
-    const [instructorDob, setInstructorDob] = useState('');
+    const [instructor, setInstructor] = useState({
+        name: '',
+        email: '',
+        password: '',
+        phone: '',
+        dob: '',
+        nationality: '',
+        address: '',
+        city: '',
+        profileUrl: ''
+    });
     const [instructors, setInstructors] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
-    const [openForm, setOpenForm] = useState(false);
+    const [success, setSuccess] = useState(null);
+    const [file, setFile] = useState(null);
+    const [editingInstructorId, setEditingInstructorId] = useState(null);
 
     // Function to fetch instructors from Firestore
     const fetchInstructors = async () => {
@@ -21,8 +28,7 @@ const RegisterInstructor = () => {
             const snapshot = await fs.collection('instructors').get();
             const instructorList = snapshot.docs.map(doc => ({
                 id: doc.id,
-                ...doc.data(),
-                editable: false  // Add editable property to each instructor
+                ...doc.data()
             }));
             setInstructors(instructorList);
         } catch (error) {
@@ -38,37 +44,47 @@ const RegisterInstructor = () => {
         fetchInstructors();
     }, []);
 
-    const handleChange = (e, id) => {
-        const { name, value } = e.target;
-        setInstructors(prevInstructors =>
-            prevInstructors.map(inst =>
-                inst.id === id ? { ...inst, [name]: value } : inst
-            )
-        );
+    const handleEdit = (id) => {
+        const instructorToEdit = instructors.find(inst => inst.id === id);
+        setInstructor(instructorToEdit);
+        setEditingInstructorId(id);
     };
 
-    const handleEditToggle = (id) => {
-        setInstructors(prevInstructors =>
-            prevInstructors.map(inst =>
-                inst.id === id ? { ...inst, editable: !inst.editable } : inst
-            )
-        );
-    };
+    const handleUpdateInstructor = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
 
-    const handleUpdateInstructor = async (id) => {
         try {
-            setLoading(true);
-            const instructorToUpdate = instructors.find(inst => inst.id === id);
+            if (file) {
+                // Upload profile picture
+                const storageRef = st.ref(`instructorProfilePhotos/${auth.currentUser.uid}`);
+                await storageRef.put(file);
+                instructor.profileUrl = await storageRef.getDownloadURL();
+            }
 
-            await fs.collection('instructors').doc(id).update({
-                name: instructorToUpdate.name,
-                email: instructorToUpdate.email,
-                phone: instructorToUpdate.phone,
-                dob: instructorToUpdate.dob,
+            // Update instructor data in Firestore
+            await fs.collection('instructors').doc(editingInstructorId).update({
+                ...instructor
             });
 
-            // Toggle editable state after update
-            handleEditToggle(id);
+            // Reset the form and state
+            setInstructor({
+                name: '',
+                email: '',
+                password: '',
+                phone: '',
+                dob: '',
+                nationality: '',
+                address: '',
+                city: '',
+                profileUrl: ''
+            });
+            setEditingInstructorId(null);
+            setSuccess('Instructor updated successfully!');
+            alert(success);
+            fetchInstructors();  // Refresh the list of instructors
         } catch (error) {
             setError(error.message);
         } finally {
@@ -80,31 +96,43 @@ const RegisterInstructor = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        setSuccess(null);
 
         try {
-            const instructorCredential = await auth.createUserWithEmailAndPassword(instructorEmail, instructorPassword);
-            const instructorUser = instructorCredential.user;
+            // Register the new instructor
+            const userCredential = await auth.createUserWithEmailAndPassword(instructor.email, instructor.password);
+            const user = userCredential.user;
 
-            await fs.collection('instructors').doc(instructorUser.uid).set({
-                name: instructorName,
-                email: instructorEmail,
-                phone: instructorPhone,
-                dob: instructorDob,
+            let profilePhotoUrl = '';
+
+            if (file) {
+                // Upload profile picture
+                const storageRef = st.ref(`instructorProfilePhotos/${user.uid}`);
+                await storageRef.put(file);
+                profilePhotoUrl = await storageRef.getDownloadURL();
+            }
+
+            // Store instructor data in Firestore
+            await fs.collection('instructors').doc(user.uid).set({
+                ...instructor,
+                profileUrl: profilePhotoUrl, // Add profile URL
                 createdAt: new Date()
             });
 
-            await instructorUser.updateProfile({
-                displayName: instructorName
+            // Reset the form and set success message
+            setInstructor({
+                name: '',
+                email: '',
+                password: '',
+                phone: '',
+                dob: '',
+                nationality: '',
+                address: '',
+                city: '',
+                profileUrl: ''
             });
-
-            setInstructorName('');
-            setInstructorEmail('');
-            setInstructorPassword('');
-            setInstructorPhone('');
-            setInstructorDob('');
-
-            // Fetch instructors again to update the list
-            await fetchInstructors();
+            setSuccess('Instructor registered successfully!');
+            fetchInstructors();  // Refresh the list of instructors
         } catch (error) {
             setError(error.message);
         } finally {
@@ -112,12 +140,15 @@ const RegisterInstructor = () => {
         }
     };
 
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
     return (
         <div className='h-full w-full'>
             <h2 className='text-custom-blue my-[12px] border- text-2xl text-center font-bold p-[8px] rounded-2xl'>Registered Instructors</h2>
             <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
 
-            
             {loading ? (
                 <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
                     <Circles
@@ -131,16 +162,16 @@ const RegisterInstructor = () => {
                     />
                 </div>
             ) : (
-                <div className='flex flex-col '>
+                <div className='flex xl:w-[85%] xl:mx-auto flex-col'>
                     {instructors.length > 0 && (
                         <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
-                            <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Instructors Data</h2>
+                            <h2 className='text-2xl text-custom-blue mb-[8px] font-bold'>Instructors Data</h2>
                             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                                 <table className="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                     <thead className="text-md text-gray-200 uppercase bg-gray-700">
                                         <tr className='text-center'>
                                             <th scope="col" className="px-6 py-3 whitespace-nowrap">Instructor Name</th>
-                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Instructor Email </th>
+                                            <th scope="col" className="px-6 py-3 whitespace-nowrap">Instructor Email</th>
                                             <th scope="col" className="px-6 py-3 whitespace-nowrap">Instructor's Contact</th>
                                             <th scope="col" className="px-6 py-3 whitespace-nowrap">Joined Since</th>
                                             <th scope="col" className="px-6 py-3 whitespace-nowrap">Actions</th>
@@ -149,136 +180,113 @@ const RegisterInstructor = () => {
                                     <tbody>
                                         {instructors.map(inst => (
                                             <tr key={inst.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue text-lg font-medium'>
-                                                <td className="px-6 py-4">{inst.editable ? (
-                                                    <input
-                                                        type="text"
-                                                        name="name"
-                                                        value={inst.name}
-                                                        className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
-                                                        onChange={(e) => handleChange(e, inst.id)}
-                                                        required
-                                                    />
-                                                ) : inst.name}</td>
-                                                <td className="px-6 py-4">{inst.editable ? (
-                                                    <input
-                                                        type="email"
-                                                        name="email"
-                                                        value={inst.email}
-                                                        className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
-                                                        onChange={(e) => handleChange(e, inst.id)}
-                                                        required
-                                                    />
-                                                ) : inst.email}</td>
-                                                <td className="px-6 py-4">{inst.editable ? (
-                                                    <input
-                                                        type="text"
-                                                        name="phone"
-                                                        className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
-                                                        value={inst.phone}
-                                                        onChange={(e) => handleChange(e, inst.id)}
-                                                        required
-                                                    />
-                                                ) : inst.phone}</td>
-                                                <td className="px-6 py-4">{inst.editable ? (
-                                                    <input
-                                                        type="date"
-                                                        name="dob"
-                                                        value={inst.dob}
-                                                        className='rounded-lg p-[4px] shadow-custom-light text-lg font-bold'
-                                                        onChange={(e) => handleChange(e, inst.id)}
-                                                        required
-                                                    />
-                                                ) : inst.dob}</td>
+                                                <td className="px-6 py-4">{inst.name}</td>
+                                                <td className="px-6 py-4">{inst.email}</td>
+                                                <td className="px-6 py-4">{inst.phone}</td>
+                                                <td className="px-6 py-4">{inst.dob}</td>
                                                 <td className="px-6 py-4">
-                                                    {inst.editable ? (
-                                                        <>
-                                                            <button className="whitespace-nowrap bg-green-900 mr-[15px] w-[75px] hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" onClick={() => handleUpdateInstructor(inst.id)}>Save</button>
-                                                            <button onClick={() => handleEditToggle(inst.id)} className="whitespace-nowrap bg-red-900 hover:bg-white  w-[75px] hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl">Cancel</button>
-                                                        </>
-                                                    ) : (
-                                                        <button onClick={() => handleEditToggle(inst.id)} className="whitespace-nowrap bg-custom-blue hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[25px] font-semibold text-white rounded-xl">
-                                                            Edit
-                                                        </button>
-                                                    )}
+                                                    <button onClick={() => handleEdit(inst.id)} className="whitespace-nowrap bg-green-800 w-[75px] hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl">Edit</button>
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
-
-                        </div> 
-                    )}
-
-                    <button className='ml-auto mr-[20px] mt-[20px] bg-custom-blue rounded-lg text-white text-lg py-[5px] px-[10px]' onClick={() => { setOpenForm(!openForm) }}>
-                        {openForm ? 'Close Registration' : 'Register Instructor'}
-                    </button>
-
-                    {openForm && (
-                        <div className='my-[8px] flex flex-col w-[95%] lg::w-[65%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
-                            <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Register Department</h2>
-                            <form onSubmit={handleRegisterInstructor}>
-                                <label className="block text-lg font-medium text-gray-700" htmlFor="instructorName">Instructor Name:</label>
-                                <input
-                                    type="text"
-                                    id="instructorName"
-                                    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-                                    value={instructorName}
-                                    onChange={(e) => setInstructorName(e.target.value)}
-                                    required
-                                />
-                                <label className="block text-lg font-medium text-gray-700" htmlFor="instructorEmail">Instructor Email:</label>
-                                <input
-                                    type="email"
-                                    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-
-                                    id="instructorEmail"
-                                    value={instructorEmail}
-                                    onChange={(e) => setInstructorEmail(e.target.value)}
-                                    required
-                                />
-                                <label className="block text-lg font-medium text-gray-700" htmlFor="instructorPassword">Password:</label>
-                                <input
-                                    type="password"
-                                    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-
-                                    id="instructorPassword"
-                                    value={instructorPassword}
-                                    onChange={(e) => setInstructorPassword(e.target.value)}
-                                    required
-                                />
-                                <label className="block text-lg font-medium text-gray-700" htmlFor="instructorPhone">Phone:</label>
-                                <input
-                                    type="text"
-                                    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-
-                                    id="instructorPhone"
-                                    value={instructorPhone}
-                                    onChange={(e) => setInstructorPhone(e.target.value)}
-                                    required
-                                />
-                                <label className="block text-lg font-medium text-gray-700" htmlFor="instructorDob">Date of Birth:</label>
-                                <input
-                                    type="date"
-                                    className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-
-                                    id="instructorDob"
-                                    value={instructorDob}
-                                    onChange={(e) => setInstructorDob(e.target.value)}
-                                    required
-                                />
-                                <button type="submit" disabled={loading} className="w-full mt-[10px] font-bold bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-blue-900 focus:outline-none focus:bg-blue-900"
-                                >
-                                    {loading ? 'Registering...' : 'Register Instructor'}
-                                </button>
-                            </form>
                         </div>
                     )}
 
+                    <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl'>
 
-                    {/* Display error message if there's an error */}
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                </div>)}
+                        {error && <p className='text-red-600'>{error}</p>}
+                        {success && <p className='text-green-600'>{success}</p>}
+                        <h2 className='text-2xl text-custom-blue mb-[8px] font-bold'>{editingInstructorId ? 'Edit Instructor' : 'Register New Instructor'}</h2>
+                        <form onSubmit={editingInstructorId ? handleUpdateInstructor : handleRegisterInstructor} className='flex flex-col space-y-6'>
+                            <input
+                                type="text"
+                                name="name"
+                                value={instructor.name}
+                                className='rounded-lg p-[8px] shadow-custom-light text-lg font-medium'
+                                placeholder="Instructor Name"
+                                onChange={(e) => setInstructor(prev => ({ ...prev, name: e.target.value }))}
+                                required
+                            />
+                            <input
+                                type="email"
+                                name="email"
+                                value={instructor.email}
+                                className='rounded-lg p-[8px] shadow-custom-light text-lg font-medium'
+                                placeholder="Instructor Email"
+                                onChange={(e) => setInstructor(prev => ({ ...prev, email: e.target.value }))}
+                                required
+                            />
+                            {editingInstructorId ? null : (
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={instructor.password}
+                                    className='rounded-lg p-[8px] shadow-custom-light text-lg font-medium'
+                                    placeholder="Password"
+                                    onChange={(e) => setInstructor(prev => ({ ...prev, password: e.target.value }))}
+                                    required
+                                />
+                            )}
+                            <input
+                                type="text"
+                                name="phone"
+                                value={instructor.phone}
+                                className='rounded-lg p-[8px] shadow-custom-light text-lg font-medium'
+                                placeholder="Phone Number"
+                                onChange={(e) => setInstructor(prev => ({ ...prev, phone: e.target.value }))}
+                                required
+                            />
+                            <input
+                                type="date"
+                                name="dob"
+                                value={instructor.dob}
+                                className='rounded-lg p-[8px] shadow-custom-light text-lg font-medium'
+                                placeholder="Date of Birth"
+                                onChange={(e) => setInstructor(prev => ({ ...prev, dob: e.target.value }))}
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="nationality"
+                                value={instructor.nationality}
+                                className='rounded-lg p-[8px] shadow-custom-light text-lg font-medium'
+                                placeholder="Nationality"
+                                onChange={(e) => setInstructor(prev => ({ ...prev, nationality: e.target.value }))}
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="address"
+                                value={instructor.address}
+                                className='rounded-lg p-[8px] shadow-custom-light text-lg font-medium'
+                                placeholder="Address"
+                                onChange={(e) => setInstructor(prev => ({ ...prev, address: e.target.value }))}
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="city"
+                                value={instructor.city}
+                                className='rounded-lg p-[8px] shadow-custom-light text-lg font-medium'
+                                placeholder="City"
+                                onChange={(e) => setInstructor(prev => ({ ...prev, city: e.target.value }))}
+                                required
+                            />
+                            <input
+                                type="file"
+                                name="profileUrl"
+                                onChange={handleFileChange}
+                            />
+                            <button type="submit" className='bg-blue-600 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded'>
+                                {editingInstructorId ? 'Update Instructor' : 'Register Instructor'}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

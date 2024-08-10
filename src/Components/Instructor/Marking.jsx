@@ -200,7 +200,7 @@ const Marking = () => {
                         <h2 className='text-2xl text-white rounded-md text-center py-[15px] bg-custom-blue mb-[8px] font-bold '>Total Weightage: {totalWeightage}%</h2>
                         <div className='overflow-x-auto mx-auto'>
                             {criteria.map((criterion, index) => (
-                                <p key={index}>
+                                <div key={index}>
                                     {editingCriteria === index ? (
                                         <div>
                                             <input
@@ -282,7 +282,7 @@ const Marking = () => {
                                             </button>
                                         </div>
                                     )}
-                                </p>
+                                </div>
                             ))}
                         </div>
 

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { auth, fs } from '../Config/Config';
+import { auth } from '../Config/Config';
 import { useAuth } from "./AuthContext";
 import { IoMdLogOut } from "react-icons/io";
 import profile from "./itu.png"
@@ -10,44 +10,27 @@ import { FiX } from "react-icons/fi";
 import { CgMenuLeftAlt } from "react-icons/cg";
 
 const Navbar = () => {
+ 
   const { userType, setUserType } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchUserType = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const departmentDoc = await fs.collection("departments").doc(user.uid).get();
-        if (departmentDoc.exists) {
-          setUserType("department");
-        } else {
-          const instructorDoc = await fs.collection("instructors").doc(user.uid).get();
-          if (instructorDoc.exists) {
-            setUserType("instructor");
-          } else {
-            setUserType("admin");
-          }
-        }
-      }
-    };
-
-    fetchUserType();
-  }, [setUserType]);
-
-
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
   const handleLogout = () => {
-    auth.signOut();
-    setUserType("");
-    navigate("/");
+    auth.signOut().then(() => {
+      setUserType(""); // Clear the user type on logout
+      navigate("/");
+    }).catch((error) => {
+      console.error("Logout error:", error);
+    });
   };
 
-
-  const linkStyles = "text-md  my-[8px] ml-[15px] border-black border-2 hover:border-white px-[8px] py-[5px] flex items-center font-medium rounded-xl";
+  const linkStyles = "text-md my-[8px] ml-[15px] border-black border-2 hover:border-white px-[8px] py-[5px] flex items-center font-medium rounded-xl";
   const activeLinkStyles = "bg-white text-black";
+
   return (
     <nav className="w-[98vw] mx-auto h-[80px] p-[4px]">
       {userType === "department" && (

@@ -2,28 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { fs } from '../../Config/Config';
 import { Circles } from 'react-loader-spinner';
 
-/*
-
-import { Circles } from 'react-loader-spinner';
-
-
-            {loading ? (
-                <div className='w-screen h-[calc(98vh-195px)] flex flex-col justify-center items-center'>
-                    <Circles
-                        height="60"
-                        width="60"
-                        color="rgb(0, 63, 146)"
-                        ariaLabel="circles-loading"
-                        wrapperStyle={{}}
-                        wrapperClass=""
-                        visible={true}
-                    />
-                </div>
-
-*/
-
-
-
 const RegisterCourse = () => {
     const [formData, setFormData] = useState({
         courseName: '',
@@ -37,13 +15,13 @@ const RegisterCourse = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [departments, setDepartments] = useState([]);
-    const [editingCourseId, setEditingCourseId] = useState(null); // Track the course being edited
+    const [editingCourseId, setEditingCourseId] = useState(null);
 
 
     useEffect(() => {
         fetchDepartments();
         fetchCourses();
-    }, []); // Empty dependency array to run once on component mount
+    }, []);
 
     const fetchDepartments = async () => {
         try {
@@ -150,8 +128,6 @@ const RegisterCourse = () => {
                 expectedSemester: '',
                 preRequisites: []
             });
-
-            // Refresh courses list after saving
             fetchCourses();
 
         } catch (error) {
@@ -159,7 +135,7 @@ const RegisterCourse = () => {
             setError('Failed to save course.');
         } finally {
             setLoading(false);
-            setEditingCourseId(null); // Reset editing mode
+            setEditingCourseId(null); 
         }
     };
 
@@ -226,14 +202,12 @@ const RegisterCourse = () => {
                             <tbody>
                                 {courses.map(course => (
                                     <tr key={course.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue text-lg font-medium'>
-                                        { /* <td>{course.id}</td> */}
-                                        { /* <td>{course.departmentId}</td>*/}
                                         <td className="px-6 py-4 whitespace-nowrap">{course.name}</td>
                                         <td className="px-6 py-4">{course.code}</td>
                                         <td className="px-6 py-4">{course.creditHours}</td>
                                         <td className="px-6 py-4">{course.expectedSemester}</td>
                                         <td>
-                                            <button onClick={() => handleEditCourse(course)} className="whitespace-nowrap bg-custom-blue hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[25px] font-semibold text-white rounded-xl">
+                                            <button onClick={() => handleEditCourse(course)} className="whitespace-nowrap bg-custom-blue hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[4px] px-[25px] font-semibold text-white rounded-xl">
                                                 Edit
                                             </button>
                                         </td>

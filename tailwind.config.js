@@ -14,7 +14,6 @@ module.exports = {
       },
       fontSize: {
         'custom-sz': '25px',
-        
         'custom-size': '20px',
       },
       boxShadow: {

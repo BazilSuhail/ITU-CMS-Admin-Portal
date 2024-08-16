@@ -4,6 +4,12 @@ import { Circles } from 'react-loader-spinner';
 
 import { useNavigate } from 'react-router-dom';
 
+import img1 from "../../Assets/img1.jpg";
+import img2 from "../../Assets/img2.jpg";
+import img3 from "../../Assets/img3.jpg";
+import img4 from "../../Assets/img4.jpg";
+import img5 from "../../Assets/img5.jpg";
+
 const InstructorProfile = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -65,7 +71,7 @@ const InstructorProfile = () => {
   const handleNavigateToMarkingCourse = (assignCourseId) => {
     navigate(`/marking-details/${assignCourseId}`);
   };
-
+  const images = [img1, img2, img3, img4, img5]; // Array of imported images
 
   return (
     <main className='h-full w-full'>
@@ -106,25 +112,30 @@ const InstructorProfile = () => {
                 </div>
               </div>
 
-              <h2 className='shadow-custom-create w-[225px] ml-[14px] my-[12px] text-2xl text-custom-blue font-bold p-[8px] rounded-xl'>Courses Teaching:</h2>
+              <h2 className='w-[225px] ml-[14px] my-[12px] text-2xl text-custom-blue font-bold p-[8px] '>Courses Teaching:</h2>
+              <div className='w-[95%] mb-[15px] mx-auto h-[2px] bg-custom-blue'></div>
 
               {assignedCourses.length > 0 ? (
                 <div className='mx-auto w-[96vw] grid grid-cols-1 xsx:grid-cols-2 xl:grid-cols-3 p-[10px] my-[12px]'>
-                  {assignedCourses.map((course) => (
-                    <div key={course.assignCourseId} className='bg-custom-blue flex flex-col rounded-lg m-[5px] text-white p-[15px]' >
-                      <div className='bg-gray-500 mt-[15px] rounded-lg mx-auto w-[100%] h-[230px]'></div>
-                      <p className='text-2xl font-bold my-[8px] ml-[5px]'>{course.courseName}</p>
-                      <p className='text-md text-gray-400 font-bold'>{course.className}</p>
+                  {assignedCourses.map((course, index) => {
+                    const imageIndex = index % images.length; // Calculate the image index based on the course index
+                    return (
+                      <div key={course.assignCourseId} className='bg-custom-blue flex flex-col rounded-lg m-[5px] text-white p-[15px]'>
+                        <div className='bg-gray-500 mt-[15px] rounded-lg mx-auto w-[100%] h-[230px]'>
+                          <img src={images[imageIndex]} alt="Counldn't fetch details | Network Error - :/" className='rounded-lg w-full h-full object-cover' />
+                        </div>
+                        <p className='text-2xl font-bold my-[8px] ml-[5px]'>{course.courseName}</p>
+                        <p className='text-md text-gray-400 font-bold'>{course.className}</p>
 
-                      <button onClick={() => handleNavigateToCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-red-600 p-[8px] rounded-xl'>
-                        Mark Attendance
-                      </button>
-                      <button onClick={() => handleNavigateToMarkingCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-green-700 p-[8px] rounded-xl'>
-                        Grade Students
-                      </button>
-
-                    </div>
-                  ))}
+                        <button onClick={() => handleNavigateToCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-red-600 p-[8px] rounded-xl'>
+                          Mark Attendance
+                        </button>
+                        <button onClick={() => handleNavigateToMarkingCourse(course.assignCourseId)} className='mx-auto w-[100%] font-bold hover:bg-custom-back-grey my-[8px] bg-green-700 p-[8px] rounded-xl'>
+                          Grade Students
+                        </button>
+                      </div>
+                    );
+                  })}
 
                 </div>
               ) : (

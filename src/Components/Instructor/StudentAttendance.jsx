@@ -23,7 +23,7 @@ const StudentAttendance = ({ student, attendance, onAttendanceChange }) => {
       <td className="px-6 py-4">
         <div>
           <select
-            className={`my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md ${getBackgroundColor(selectedValue)}`}
+            className={`my-[5px] shadow-custom-light block w-full  lg:w-[250px] mx-auto px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md ${getBackgroundColor(selectedValue)}`}
             value={selectedValue}
             onChange={handleChange}
           >

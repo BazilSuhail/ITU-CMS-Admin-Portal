@@ -198,109 +198,119 @@ const Marking = () => {
                     <div className='my-[8px] w-[95%] lg::w-[65%] mx-auto p-[15px] bg-gray-200 rounded-xl overflow-x-auto'>
 
                         <h2 className='text-2xl text-white rounded-md text-center py-[15px] bg-custom-blue mb-[8px] font-bold '>Total Weightage: {totalWeightage}%</h2>
-                        <div className='overflow-x-auto mx-auto'>
-                            {criteria.map((criterion, index) => (
-                                <div key={index}>
-                                    {editingCriteria === index ? (
-                                        <div>
-                                            <input
-                                                type="text"
-                                                value={criterion.assessment}
-                                                className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-                                                onChange={(e) =>
-                                                    setCriteria((prev) =>
-                                                        prev.map((item, i) =>
-                                                            i === index ? { ...item, assessment: e.target.value } : item
-                                                        )
-                                                    )
-                                                }
-                                            />
-                                            <input
-                                                type="number"
-                                                value={criterion.weightage}
-                                                className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-                                                onChange={(e) =>
-                                                    setCriteria((prev) =>
-                                                        prev.map((item, i) =>
-                                                            i === index ? { ...item, weightage: e.target.value } : item
-                                                        )
-                                                    )
-                                                }
-                                            />
-                                            <input
-                                                type="number"
-                                                value={criterion.totalMarks}
-                                                className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-                                                onChange={(e) =>
-                                                    setCriteria((prev) =>
-                                                        prev.map((item, i) =>
-                                                            i === index ? { ...item, totalMarks: e.target.value } : item
-                                                        )
-                                                    )
-                                                }
-                                            />
-                                            {/*       <button onClick={() => setEditingCriteria(-1)}
-                                                className="whitespace-nowrap m-[6px] bg-green-900 hover:bg-white hover:shadow-custom-light hover:text-green-900 text-md py-[8px] px-[12px] font-semibold text-white rounded-xl"
-                                            >
-                                                Click Save Marks to Update
-                                            </button>
-                                             */}
-                                            <button onClick={handleSaveMarks} disabled={!allCriteriaFilled || !allMarksEntered} className="whitespace-nowrap m-[6px] bg-green-900 hover:bg-white hover:shadow-custom-light hover:text-green-900 text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" >
-                                                Update Criteria
-                                            </button>
-                                        </div>
-                                    ) : (
-
-                                        <div className='flex overflow-auto w-[98%] mx-auto items-center my-[20px]'>
-
-                                            <p className='font-bold whitespace-nowrap ml-[15px] text-lg text-custom-blue'>
-                                                Assement Name:
-                                            </p>
-                                            <p className='font-bold  rounded-lg shadow-custom-light p-[5px] whitespace-nowrap ml-[15px] text-2xl text-blue-900'>
-                                                {criterion.assessment}
-                                            </p>
-
-                                            <p className='font-bold  whitespace-nowrap ml-[15px] text-lg text-custom-blue'>
-                                                Weightage:
-                                            </p>
-                                            <p className='font-bold  rounded-lg shadow-custom-light p-[5px] whitespace-nowrap ml-[15px] text-2xl text-blue-900'>
-                                                {criterion.weightage}%
-                                            </p>
-
-                                            <p className='font-bold whitespace-nowrap ml-[15px] text-lg text-custom-blue'>
-                                                Total Marks
-                                            </p>
-                                            <p className='font-bold  rounded-lg shadow-custom-light p-[5px] whitespace-nowrap ml-[15px] text-2xl text-blue-900'>
-                                                {criterion.totalMarks}
-                                            </p>
-
-                                            <button onClick={() => handleEditCriteria(index)} className="whitespace-nowrap ml-[45px] w-[75px] bg-blue-800 hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" >
-                                                Edit
-                                            </button>
-                                            <button onClick={() => handleDeleteCriteria(index)} className="whitespace-nowrap w-[75px] m-[6px] bg-red-900 hover:bg-white hover:shadow-custom-light hover:text-red-900 text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                            <table className="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead className="text-md text-gray-200 uppercase bg-gray-700">
+                                    <tr className='text-center'>
+                                        <th scope="col" className="px-6 py-3 whitespace-nowrap">Assesment Name</th>
+                                        <th scope="col" className="px-6 py-3 whitespace-nowrap">Weightage</th>
+                                        <th scope="col" className="px-6 py-3 whitespace-nowrap">Total Marks</th>
+                                        <th scope="col" className="px-6 py-3 whitespace-nowrap">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {criteria.map((criterion, index) => (
+                                        <tr key={index} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue  border-b  font-semibold text-md'>
+                                            {editingCriteria === index ? (
+                                                <>
+                                                    <td className="px-4 py-1">
+                                                        <input
+                                                            type="text"
+                                                            value={criterion.assessment}
+                                                            className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+                                                            onChange={(e) =>
+                                                                setCriteria((prev) =>
+                                                                    prev.map((item, i) =>
+                                                                        i === index ? { ...item, assessment: e.target.value } : item
+                                                                    )
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="px-4 py-1">
+                                                        <input
+                                                            type="number"
+                                                            value={criterion.weightage}
+                                                            className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+                                                            onChange={(e) =>
+                                                                setCriteria((prev) =>
+                                                                    prev.map((item, i) =>
+                                                                        i === index ? { ...item, weightage: e.target.value } : item
+                                                                    )
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="px-4 py-1">
+                                                        <input
+                                                            type="number"
+                                                            value={criterion.totalMarks}
+                                                            className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+                                                            onChange={(e) =>
+                                                                setCriteria((prev) =>
+                                                                    prev.map((item, i) =>
+                                                                        i === index ? { ...item, totalMarks: e.target.value } : item
+                                                                    )
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="px-4 py-2 text-center">
+                                                        <button
+                                                            onClick={handleSaveMarks}
+                                                            disabled={!allCriteriaFilled || !allMarksEntered}
+                                                            className="whitespace-nowrap bg-green-900 hover:bg-white hover:shadow-custom-light hover:text-green-900 text-md py-[8px] px-[12px] font-semibold text-white rounded-xl"
+                                                        >
+                                                            Update Criteria
+                                                        </button>
+                                                    </td>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <td className="px-6 font-bold py-2 whitespace-nowrap text-lg  text-gray-900">
+                                                        {criterion.assessment}
+                                                    </td>
+                                                    <td className="px-6 font-bold py-2 whitespace-nowrap text-lg  text-gray-900">
+                                                        {criterion.weightage}%
+                                                    </td>
+                                                    <td className="px-6 font-bold py-2 whitespace-nowrap text-lg  text-gray-900">
+                                                        {criterion.totalMarks}
+                                                    </td>
+                                                    <td className="px-6 font-bold py-2 whitespace-nowrap text-lg  text-gray-900">
+                                                        <button
+                                                            onClick={() => handleEditCriteria(index)}
+                                                            className="whitespace-nowrap w-[75px] bg-blue-800 hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[4px] px-[12px] font-semibold text-white rounded-xl"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteCriteria(index)}
+                                                            className="whitespace-nowrap w-[75px] m-[6px] bg-red-900 hover:bg-white hover:shadow-custom-light hover:text-red-900 text-md py-[4px] px-[12px] font-semibold text-white rounded-xl"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+                                                </>
+                                            )}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
 
-                        <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Define Grading Criteria</h2>
+                        <h2 className='text-2xl text-custom-blue mb-[8px] mt-[15px] font-bold '>Define Grading Criteria</h2>
                         <div>
                             <input
                                 type="text"
                                 required
                                 placeholder="Enter Assessment Name"
-                                className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-
+                                className="my-[5px] mb-[10px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
                                 value={newCriteria.assessment}
                                 onChange={(e) => setNewCriteria({ ...newCriteria, assessment: e.target.value })}
                             />
                             <input
                                 type="number"
-                                className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-
+                                className="my-[5px] mb-[10px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
                                 placeholder="Enter Assessment Weightage"
                                 required
                                 value={newCriteria.weightage}
@@ -308,8 +318,7 @@ const Marking = () => {
                             />
                             <input
                                 type="number"
-                                className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-
+                                className="my-[5px] mb-[10px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
                                 placeholder="Enter Expected Total Marks For the Assessment"
                                 value={newCriteria.totalMarks}
                                 required
@@ -322,23 +331,21 @@ const Marking = () => {
 
                     </div>
 
-
                     <div>
                         {criteria.length > 0 ? (
-
                             <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
                                 <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Marks Details</h2>
-                                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                                    <table class="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                        <thead class="text-md text-gray-200 uppercase bg-gray-700">
+                                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                    <table className="w-[100%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                        <thead className="text-md text-gray-200 uppercase bg-gray-700">
                                             <tr className='text-center'>
-                                                <th scope="col" class="px-6 py-3 whitespace-nowrap">Student</th>
+                                                <th scope="col" className="px-6 py-3 whitespace-nowrap">Student</th>
                                                 {criteria.map((criterion, index) => (
-                                                    <th scope="col" class="px-6 py-3 whitespace-nowrap" key={index}>{criterion.assessment}</th>
+                                                    <th scope="col" className="px-6 py-3 whitespace-nowrap" key={index}>{criterion.assessment}</th>
                                                 ))}
 
                                                 {criteria.map((criterion, index) => (
-                                                    <th scope="col" class="px-6 py-3 whitespace-nowrap" key={index}>Weighted Marks ({criterion.assessment})</th>
+                                                    <th scope="col" className="px-6 py-3 whitespace-nowrap" key={index}>Weighted Marks ({criterion.assessment})</th>
                                                 ))}
                                                 <th>Grade</th>
                                             </tr>

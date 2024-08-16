@@ -5,8 +5,8 @@ import { useAuth } from "./AuthContext";
 import logo from "./itu.png"
 
 const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('bazil@gmail.com');
+  const [password, setPassword] = useState('112233');
   const [role, setRole] = useState('department');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -67,9 +67,9 @@ const SignIn = () => {
     setRole(role);
   };
   return (
-    <div className='fixed mt-[-85px] text-white bg-custom-blue w-screen h-[125vh] z-50'>
-      <img src={logo} alt="" className='mx-auto xsx:w-[200px] xsx:mt-[45px] mt-[65px] w-[150px] h-[150px] xsx:h-[200px] rounded-[50%] my-[20px]' />
-      <div className='w-[100vw] md:w-[600px] mx-auto p-[8px] md:p-[20px] flex flex-col items-center'>
+    <div className='fixed mt-[-85px] text-white bg-gradient-to-br from-custom-blue via-black  to-custom-blue w-screen h-[125vh] z-50'>
+      <img src={logo} alt="" className='mx-auto xsx:w-[200px] xsx:mt-[45px] mt-[65px] w-[150px] h-[150px] xsx:h-[200px] rounded-[50%] my-[px20px]' />
+      <div className='w-[100vw] md:w-[600px] xl:w-[580px] mx-auto p-[8px] md:p-[20px] flex flex-col items-center'>
 
         <h2 className='text-3xl font-bold xsx:mt-[-20px] mb-[15px]'>Admin Portal</h2>
         <div className='h-[3px] w-[95%] mx-auto mb-[25px] bg-blue-50'></div>

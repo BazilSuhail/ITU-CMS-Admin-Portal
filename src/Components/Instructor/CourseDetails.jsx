@@ -104,8 +104,7 @@ const CourseDetails = () => {
           ],
         });
       }
-
-      // Reset form and refresh latest attendance
+      
       setSelectedDate('');
       setAttendance({});
 

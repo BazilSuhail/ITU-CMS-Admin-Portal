@@ -86,10 +86,10 @@ const ClassStudents = () => {
                                                 <td className="px-6 py-4">{student.dob}</td>
                                                 <td className="px-6 py-4">{student.email}</td>
                                                 <td>
-                                                    <button onClick={() => handleViewEnrollments(student.id)} className="whitespace-nowrap bg-custom-blue hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" >View Enrollments</button>
+                                                    <button onClick={() => handleViewEnrollments(student.id)} className="whitespace-nowrap bg-custom-blue hover:bg-white hover:shadow-custom-light hover:text-custom-blue text-[15px] py-[4px] px-[12px] font-semibold text-white rounded-xl" >View Enrollments</button>
                                                 </td>
                                                 <td>
-                                                    <button onClick={() => handleWithdrawEnrollments(student.id)} className="whitespace-nowrap bg-red-600 hover:bg-white hover:shadow-custom-light hover:text-red-600 text-md py-[8px] px-[12px] font-semibold text-white rounded-xl" >Withdraw Enrollments</button>
+                                                    <button onClick={() => handleWithdrawEnrollments(student.id)} className="whitespace-nowrap bg-red-600 hover:bg-white hover:shadow-custom-light hover:text-red-600 text-[15px] py-[4px] px-[12px] font-semibold text-white rounded-xl" >Withdraw Enrollments</button>
                                                 </td>
                                             </tr>
                                         ))}

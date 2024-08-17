@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { auth, fs } from '../../Config/Config';
 import { Circles } from 'react-loader-spinner';
 import { useNavigate } from 'react-router-dom';
-import { FaRegTrashCan } from "react-icons/fa6"; 
+import { FaRegTrashCan } from "react-icons/fa6";
 
 const AssignCourses = () => {
     const navigate = useNavigate();
@@ -207,8 +207,8 @@ const AssignCourses = () => {
                                 {assignLoading ? 'Assigning...' : 'Assign Course'}
                             </button>
                         </form>
-                        </div>
-                        
+                    </div>
+
                     <div className='my-[8px] flex flex-col w-[95%] mx-auto p-[15px] justify-center bg-gray-100 rounded-xl overflow-x-auto'>
                         <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Classes Data</h2>
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -225,7 +225,7 @@ const AssignCourses = () => {
                                     {assignments.map((assignment) => (
                                         <tr key={assignment.id} className='text-center odd:bg-white even:bg-gray-200 text-custom-blue  border-b  font-semibold text-md'>
                                             <td className="px-6 font-bold py-4 whitespace-nowrap text-lg  text-gray-900">
-                                            {classes.find(cls => cls.id === assignment.classId)?.name || 'N/A'}
+                                                {classes.find(cls => cls.id === assignment.classId)?.name || 'N/A'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-lg text-gray-500">
                                                 {instructors.find(instructor => instructor.id === assignment.instructorId)?.name || 'N/A'}

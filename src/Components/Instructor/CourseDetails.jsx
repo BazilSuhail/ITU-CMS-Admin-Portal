@@ -160,7 +160,7 @@ const CourseDetails = () => {
           )}
 
           {formLoading ? (
-            <p>Loading...</p>
+            <p className='bg-green-100 border-2 border-green-700 text-center text-lg px-[15px] py-2 font-semibold rounded-lg mx-auto my-[25px] text-green-700'>Saving Attendance ...</p>
           ) : (
             <div className='my-[8px] flex flex-col w-[95%] lg::w-[65%] mx-auto p-[15px] justify-center bg-gray-200 rounded-xl overflow-x-auto'>
               <h2 className='text-2xl text-custom-blue mb-[8px] font-bold '>Mark Attendance</h2>
@@ -170,8 +170,9 @@ const CourseDetails = () => {
               </label>
               <input
                 type="date"
-                className="my-[5px] shadow-custom-light block w-full px-3 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
-                value={selectedDate}
+                className="my-[5px] shadow-custom-light block w-full px-3 placeholder:text-gray-800 py-2 border-3 font-bold border-custom-blue placeholder-gray-400 focus:outline-none focus:ring focus:border-custom-blue sm:text-sm rounded-md"
+                      value={selectedDate}
+                      placeholder='Select Date'
                 onChange={(e) => setSelectedDate(e.target.value)}
                 required
               />
@@ -204,7 +205,7 @@ const CourseDetails = () => {
           )}
 
           <button onClick={() => seteditForm(!editForm)}
-            className='shadow-custom my-[55px]-light py-[8px] w-[385px] lg:w-[55vw] mx-auto rounded-xl bg-green-900 text-2xl font-bold hover:text-green-900 hover:bg-white hover:shadow-custom-light text-white'
+            className='my-[12px] py-[5px] w-[255px] md:w-[310px] ml-auto mr-[8px] xl:mr-[35px] rounded-xl bg-green-900 text-[18px] md:text-[22px] font-medium hover:text-green-900 hover:bg-white hover:shadow-custom-light text-white'
           >
             {editForm ? 'Close Review' : 'Show Attendance Records'}
           </button>

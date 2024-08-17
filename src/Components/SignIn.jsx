@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { auth, fs } from '../Config/Config';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "./AuthContext";
@@ -7,11 +7,19 @@ import logo from "./itu.png"
 const SignIn = () => {
   const [email, setEmail] = useState('bazil@gmail.com');
   const [password, setPassword] = useState('112233');
-  const [role, setRole] = useState('department');
+  const [role, setRole] = useState('instructor');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { setUserType } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (role === 'instructor') {
+      setEmail('bazil@gmail.com');
+    } else {
+      setEmail('cs@gmail.com');
+    }
+  }, [role]); // The effect runs when `role` changes
 
   const handleSignIn = async (e) => {
     e.preventDefault();

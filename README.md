@@ -59,12 +59,12 @@ With real updates, a responsive interface, and intuitive navigation, students ca
  ---
 
 - Check out the latest demo of Project [ITU-CMS-Admin-Website](https://itu-admin.netlify.app/).  
-- Check the latest demo of **Mobile Application** of this Project [ITU-CMS-Admin-Website](https://github.com/BazilSuhail/ITU-CMS-Instructor-App). 
+- Check the latest demo of **Mobile Application** of this Project [ITU-CMS-Admin-App-Repository](https://github.com/BazilSuhail/ITU-CMS-Instructor-App). 
 
  --- 
  
-- Find the Student side's Repository Here [ITU-CMS-Student-Website](https://github.com/BazilSuhail/ITU-CMS-Student-Portal). 
-- Find the repository of **Mobile Application** of the Student Project [ITU-CMS-Student-App](https://github.com/BazilSuhail/ITU-CMS-Student-App).
+- Find the Student side's Repository Here [ITU-CMS-Student](https://github.com/BazilSuhail/ITU-CMS-Student-Portal). 
+- Find the repository of **Mobile Application** of the Student Project [ITU-CMS-Student-App-Repository](https://github.com/BazilSuhail/ITU-CMS-Student-App).
 
 ---
 
